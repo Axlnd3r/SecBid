@@ -1,0 +1,14 @@
+{
+  "input": {
+    "auction_id": "00112233445566778899aabbccddeeff",
+    "txid": "1111111111111111111111111111111111111111111111111111111111111111",
+    "action_index": 0,
+    "amount_zat": "1200000000",
+    "qty": "1",
+    "refund_address": "u1goldenrefundaddress00000000000000000000000",
+    "outcome": "winner"
+  },
+  "salt": "bbf19ab43f3d357c8a2e1531175cd20266bbe4be6d7b529ee1dc4b2e3dbdad26",
+  "refund_commit": "94890d5f182247aa8fd278c54090d9ec714a21b3474fa184db98d78584321f28",
+  "leaf": "195d68f8717acc75c28e998f58330d5f6e91732e6be8cddce5a476e26370b6dc"
+}

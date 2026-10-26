@@ -1,0 +1,96 @@
+/*
+ * Secbid design tokens.
+ *
+ * Dark only, deliberately: the reference (xmcp.dev) is a single-mode page on a
+ * pure-black canvas with one white accent and no gradients. Every component
+ * reads these aliases, never raw hex, so the whole page re-binds from here.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces — the page is #000; panels are barely lifted from it */
+  --void: #000000;
+  --surface-0: #050505;
+  --surface-1: #0a0a0a;
+  --surface-2: #101010;
+  --surface-raised: #050505;
+
+  /* ink — --ink-2 is the faintest token allowed to carry text (5.9:1 on --void, AA at 10px).
+     --ink-3 is decoration only: dots, rules, bar fills. */
+  --ink: #f2f2f2;
+  --ink-1: #b3b3b3;
+  --ink-2: #8a8a8a;
+  --ink-3: #5a5a5a;
+
+  /* lines */
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --line-soft: rgba(255, 255, 255, 0.05);
+
+  /* signal — one accent, and it is white */
+  --accent: #f5f5f5;
+  --accent-ink: #0a0a0a;
+  --pass: #7ee0b0;
+  --fail: #ff7a6b;
+  --skip: #8f8f8f;
+  --warn: #e3a366;
+  --paper: #f5f5f5;
+
+  /* type */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Berkeley Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --t-2xs: 0.6875rem;
+  --t-xs: 0.75rem;
+  --t-sm: 0.8125rem;
+  --t-base: 1rem;
+  --t-md: 1.0625rem;
+  --t-lg: clamp(1.1875rem, 1.3vw, 1.4375rem);
+  --t-xl: clamp(1.625rem, 2.4vw, 2.25rem);
+  --t-2xl: clamp(1.9rem, 3.2vw, 2.75rem);
+  --t-display: clamp(2rem, 2.7vw, 2.75rem);
+
+  --tracking-tight: -0.03em;
+  --tracking-tighter: -0.04em;
+  --tracking-wide: 0.16em;
+  --leading-tight: 1.06;
+  --leading-body: 1.62;
+
+  /* space — 4 / 8 scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 48px;
+  --s-10: 64px;
+  --s-11: 80px;
+  --s-12: 96px;
+  --s-13: 128px;
+
+  /* shape */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-pill: 999px;
+
+  /* layout */
+  --container: 1200px;
+  --gutter: clamp(20px, 4vw, 32px);
+  --nav-h: 64px;
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --dur-1: 180ms;
+  --dur-2: 420ms;
+  --dur-3: 780ms;
+
+  /* elevation — flat, like the reference; no glow, no drop shadow */
+  --shadow-inset: none;
+  --shadow-panel: none;
+}

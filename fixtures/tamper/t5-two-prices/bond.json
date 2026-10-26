@@ -1,0 +1,9 @@
+{
+  "txid": "f37ebac22a069e92fbe708eb247fa455057dc1731076b14a7b0010d72311ba8e",
+  "address": "u1secbidbondaddress0000000000000000000000000000000000000000000000",
+  "amount_zat": "100000000",
+  "commitment": "e9113c77542acbcf235b3d5668b880c9bac1c094cc7b6ee45ce8dcbab6d382d9",
+  "funded_at_height": 3111000,
+  "spent_at_height": null,
+  "spend_txid": null
+}

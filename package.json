@@ -1,0 +1,16 @@
+{
+  "name": "secbid",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sealed-bid auctions on Zcash where the bid is a shielded payment",
+  "engines": { "node": ">=22.6" },
+  "scripts": {
+    "test": "node scripts/make-fixtures.ts && node --test tests/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "fixtures": "node scripts/make-fixtures.ts",
+    "verify": "node src/cli.ts verify",
+    "demo": "node src/cli.ts demo",
+    "web": "node scripts/serve-web.ts"
+  }
+}

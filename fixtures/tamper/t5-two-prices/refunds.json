@@ -1,0 +1,23 @@
+{
+  "spec": 2,
+  "auction_id": "aac0389f74bea0204a8084787207a853",
+  "txs": [
+    {
+      "txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2",
+      "height": 3120101,
+      "output_count": 4
+    },
+    {
+      "txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30",
+      "height": 3120101,
+      "output_count": 4
+    },
+    {
+      "txid": "06e89a7dd0d9e9844c5592a7e0faab86063033ffb6b7fc19630284ac2af98b77",
+      "height": 3120101,
+      "output_count": 1
+    }
+  ],
+  "output_count": 9,
+  "outputs_hash": "5222f476288509f28098d51f3570fc2db765c2e5b75896d39e209a371548e092"
+}

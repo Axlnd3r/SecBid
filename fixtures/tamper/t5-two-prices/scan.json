@@ -1,0 +1,154 @@
+{
+  "spec": 2,
+  "chain_tx_count": 9,
+  "chain_note_count": 9,
+  "notes": [
+    {
+      "txid": "b75e6a4aab21e73c14685a5e326fa03e7e89eadc4316b6e55ee1cbd14f335a19",
+      "height": 3119000,
+      "action_index": 0,
+      "value_zat": "1200000000",
+      "cm": "262012cdb258b3f2462697d854cf93ad588c42bc617315b4c1a5f4d8360ceb9a",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-0secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "ab01eca57451bad4d54789d700f55fc3832955a655ca7c9bee4615699f7393d6",
+      "height": 3119100,
+      "action_index": 0,
+      "value_zat": "900000000",
+      "cm": "f4e977d3202d24c8e1bcd3cd5ece960a1c59f272340ab5cf976c1ffe6ef63363",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-1secbid00000000000000000000000\",\"qty\":\"2\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "c08255ae1d3751cdf7d3aa4d7b89f1e643682d76a49a1558ea0f6a0d647378d4",
+      "height": 3119200,
+      "action_index": 0,
+      "value_zat": "800000000",
+      "cm": "b343cd3239967617e4f2089f6ca48280ebdab5aa4ad59a3d3dcbb0819766003b",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-2secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "b7948521f867e1a44ec88ad7fb172519e0bd8731c41f8e54404eec144c3fd5e0",
+      "height": 3119300,
+      "action_index": 0,
+      "value_zat": "1300000000",
+      "cm": "90188f18ee5ad839019ca713e327f8ce1bb3e680a0870d060ba43cf634f30ee6",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-3secbid00000000000000000000000\",\"qty\":\"2\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "b07e653133bd0022a7f60bce260fd50d764045fe9aadb693951417b3cb1c00b8",
+      "height": 3119400,
+      "action_index": 0,
+      "value_zat": "500000000",
+      "cm": "e78d1e75f9b74302567feeeb184f0354a14bb8957429fffa62a502c518cdf449",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-4secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "124213cc050d5b402245a4f6f978762b6555a76041e38da4bdc58d4ac29b8c8a",
+      "height": 3119500,
+      "action_index": 0,
+      "value_zat": "200000000",
+      "cm": "5684ac54318d5cdbd7d4aae03443dba93456ec2fcf4508fd5d4742e7fb068565",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-5secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "23522407e00ca41c73fff178cf4a03f2fdec8d2bb6e8b1a7d91627826a6a10c0",
+      "height": 3120100,
+      "action_index": 0,
+      "value_zat": "30000000",
+      "cm": "297c0140869a0cb37aed056a9dc6ac00cbe057f686ff2ce8734ac0c7c331e735",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-6secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "81cd13e75a778fc7cd2510b3b443bf7ab2b111f667999b0e33796499841f42d0",
+      "height": 3119600,
+      "action_index": 0,
+      "value_zat": "5000",
+      "cm": "125f8d985094458f4e9832a552769526d8beb3af0580792576c93ea804ed0707",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-7secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": false,
+      "pool": "orchard"
+    },
+    {
+      "txid": "3889fc16a844b957b9fa24f42c432c45952436b9506c8cbc9104ad0934150c5e",
+      "height": 3119700,
+      "action_index": 0,
+      "value_zat": "800000000",
+      "cm": "c329a307e4fb6b1393306cced1b9d07ae7b3e00579d715c0efad4f4166f87e90",
+      "memo_raw": "{\"v\":2,\"refund\":\"u1refund2-8secbid00000000000000000000000\",\"qty\":\"1\"}",
+      "transparent_funded": true,
+      "pool": "orchard"
+    }
+  ],
+  "refund_outputs": [
+    {
+      "txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2",
+      "height": 3120101,
+      "address": "u1refund2-0secbid00000000000000000000000",
+      "value_zat": "550000000"
+    },
+    {
+      "txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2",
+      "height": 3120101,
+      "address": "u1refund2-1secbid00000000000000000000000",
+      "value_zat": "900000000"
+    },
+    {
+      "txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2",
+      "height": 3120101,
+      "address": "u1refund2-2secbid00000000000000000000000",
+      "value_zat": "150000000"
+    },
+    {
+      "txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2",
+      "height": 3120101,
+      "address": "u1refund2-3secbid00000000000000000000000",
+      "value_zat": "650000000"
+    },
+    {
+      "txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30",
+      "height": 3120101,
+      "address": "u1refund2-4secbid00000000000000000000000",
+      "value_zat": "500000000"
+    },
+    {
+      "txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30",
+      "height": 3120101,
+      "address": "u1refund2-5secbid00000000000000000000000",
+      "value_zat": "200000000"
+    },
+    {
+      "txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30",
+      "height": 3120101,
+      "address": "u1refund2-6secbid00000000000000000000000",
+      "value_zat": "30000000"
+    },
+    {
+      "txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30",
+      "height": 3120101,
+      "address": "u1refund2-7secbid00000000000000000000000",
+      "value_zat": "5000"
+    },
+    {
+      "txid": "06e89a7dd0d9e9844c5592a7e0faab86063033ffb6b7fc19630284ac2af98b77",
+      "height": 3120101,
+      "address": "u1refund2-8secbid00000000000000000000000",
+      "value_zat": "800000000"
+    }
+  ],
+  "ovk": "d2162a49bfa99dd4fa44eb2989e78b40a0632878614232f8394a87f7df0940e7"
+}

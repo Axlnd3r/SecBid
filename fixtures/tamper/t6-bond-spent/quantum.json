@@ -1,0 +1,47 @@
+{
+  "spec": 2,
+  "auction_id": "aac0389f74bea0204a8084787207a853",
+  "disclaimer": "Quantum-recoverable ≠ post-quantum. Privacy of revealed data is not protected against a future discrete-log-breaking adversary.",
+  "pool": {
+    "auction": "orchard",
+    "warning": null
+  },
+  "notes": {
+    "observed": true,
+    "total": 9,
+    "by_pool": {
+      "ironwood": 0,
+      "orchard": 9,
+      "sapling": 0
+    },
+    "recoverable": 0
+  },
+  "published": [
+    {
+      "kind": "auction_address",
+      "value": "u1secbiduniformauctionaddress00000000000000000000000000000000000000000",
+      "note": "public for the lifetime of the auction; do not reuse it for anything else"
+    },
+    {
+      "kind": "revealed_ufvk",
+      "value": "uview1secbiddemoauctionviewingkey0000000000000000000000000000000000000000",
+      "note": "reveals every received note and memo this account ever held"
+    },
+    {
+      "kind": "bond_address",
+      "value": "u1secbidbondaddress0000000000000000000000000000000000000000000000",
+      "note": "bond of 100000000 zat, funded at 3111000"
+    }
+  ],
+  "refund_reuse": {
+    "duplicated_in_auction": 0,
+    "reused_across_auctions": 0,
+    "entries": []
+  },
+  "exposed": [
+    "The auction account holds spending keys in one place: custody is auditable, not trustless.",
+    "9 note(s) are not in the quantum-recoverable pool; a discrete-log break would expose their value and owner.",
+    "The published UFVK is long-lived and cannot be unpublished.",
+    "No refund address was reused within this auction."
+  ]
+}

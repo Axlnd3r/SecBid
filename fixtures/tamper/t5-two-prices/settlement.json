@@ -1,0 +1,150 @@
+{
+  "spec": 2,
+  "auction_id": "aac0389f74bea0204a8084787207a853",
+  "params_hash": "f59d4fa5756f99cd50a0ebf37c18c5c54d8cc9d1921f2cc04d659045ea2f8976",
+  "ovk_commitment": "385a1a8144bbd45612676b16d583f8492b0006b86ae56460df4aeb01091398ac",
+  "ufvk": "uview1secbiddemoauctionviewingkey0000000000000000000000000000000000000000",
+  "deadline_height": 3120000,
+  "settle_height": 3120003,
+  "rule": "uniform",
+  "units": "3",
+  "entries": [
+    {
+      "leaf": "347136fdd9cb4ed95875d5dabd439711e8e893778e04744a4eee5eda588a9167",
+      "txid": "b75e6a4aab21e73c14685a5e326fa03e7e89eadc4316b6e55ee1cbd14f335a19",
+      "cm": "262012cdb258b3f2462697d854cf93ad588c42bc617315b4c1a5f4d8360ceb9a",
+      "height": 3119000,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "1",
+      "payment_zat": "650000001",
+      "outcome": "winner",
+      "refund_txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2"
+    },
+    {
+      "leaf": "bfc4e58df7591f927c209fe94206883fee865c6ad503037f8cc372dc4fc88192",
+      "txid": "ab01eca57451bad4d54789d700f55fc3832955a655ca7c9bee4615699f7393d6",
+      "cm": "f4e977d3202d24c8e1bcd3cd5ece960a1c59f272340ab5cf976c1ffe6ef63363",
+      "height": 3119100,
+      "action_index": 0,
+      "qty": "2",
+      "filled_qty": "0",
+      "payment_zat": "0",
+      "outcome": "refunded",
+      "refund_txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2"
+    },
+    {
+      "leaf": "2c0e2e91f2abcae365b376bca9f66d49dc274ce62d44e1aa7e63905692fd9d4a",
+      "txid": "c08255ae1d3751cdf7d3aa4d7b89f1e643682d76a49a1558ea0f6a0d647378d4",
+      "cm": "b343cd3239967617e4f2089f6ca48280ebdab5aa4ad59a3d3dcbb0819766003b",
+      "height": 3119200,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "1",
+      "payment_zat": "650000000",
+      "outcome": "winner",
+      "refund_txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2"
+    },
+    {
+      "leaf": "7ce3418477291d1e84e0b57ee719d76ae4e9cd24bbc5e1fd23d801f77b83902d",
+      "txid": "b7948521f867e1a44ec88ad7fb172519e0bd8731c41f8e54404eec144c3fd5e0",
+      "cm": "90188f18ee5ad839019ca713e327f8ce1bb3e680a0870d060ba43cf634f30ee6",
+      "height": 3119300,
+      "action_index": 0,
+      "qty": "2",
+      "filled_qty": "1",
+      "payment_zat": "650000000",
+      "outcome": "winner",
+      "refund_txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2"
+    },
+    {
+      "leaf": "cfa58589dc11658b7b46a693e978613efde4365818bd5ad92a299a5f9550b00f",
+      "txid": "b07e653133bd0022a7f60bce260fd50d764045fe9aadb693951417b3cb1c00b8",
+      "cm": "e78d1e75f9b74302567feeeb184f0354a14bb8957429fffa62a502c518cdf449",
+      "height": 3119400,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "0",
+      "payment_zat": "0",
+      "outcome": "refunded",
+      "refund_txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30"
+    },
+    {
+      "leaf": "e0235dd089b981a14582255c415c40eb33e6c99922ad33ce6010019db31a4713",
+      "txid": "124213cc050d5b402245a4f6f978762b6555a76041e38da4bdc58d4ac29b8c8a",
+      "cm": "5684ac54318d5cdbd7d4aae03443dba93456ec2fcf4508fd5d4742e7fb068565",
+      "height": 3119500,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "0",
+      "payment_zat": "0",
+      "outcome": "refunded",
+      "refund_txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30"
+    },
+    {
+      "leaf": "c8128ad21ec49f3040a0ce7f578a92303bc75aae90a415942e1ec5e7d69a18e6",
+      "txid": "81cd13e75a778fc7cd2510b3b443bf7ab2b111f667999b0e33796499841f42d0",
+      "cm": "125f8d985094458f4e9832a552769526d8beb3af0580792576c93ea804ed0707",
+      "height": 3119600,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "0",
+      "payment_zat": "0",
+      "outcome": "dust",
+      "refund_txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30"
+    },
+    {
+      "leaf": "66a2c71268def92556596faa7f9c75f123c5e2b5076363a3e4fec0e0621b7273",
+      "txid": "3889fc16a844b957b9fa24f42c432c45952436b9506c8cbc9104ad0934150c5e",
+      "cm": "c329a307e4fb6b1393306cced1b9d07ae7b3e00579d715c0efad4f4166f87e90",
+      "height": 3119700,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "0",
+      "payment_zat": "0",
+      "outcome": "transparent_funded",
+      "refund_txid": "06e89a7dd0d9e9844c5592a7e0faab86063033ffb6b7fc19630284ac2af98b77"
+    },
+    {
+      "leaf": "b2f46aa41ce3092787577ab4c677476f9801f4d518fd6a2c61811249ce74aec1",
+      "txid": "23522407e00ca41c73fff178cf4a03f2fdec8d2bb6e8b1a7d91627826a6a10c0",
+      "cm": "297c0140869a0cb37aed056a9dc6ac00cbe057f686ff2ce8734ac0c7c331e735",
+      "height": 3120100,
+      "action_index": 0,
+      "qty": "1",
+      "filled_qty": "0",
+      "payment_zat": "0",
+      "outcome": "late",
+      "refund_txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30"
+    }
+  ],
+  "merkle_root": "e2f377362fd829c1d3f1298739ed4938628e4740903e054c74e9d721c157500d",
+  "result": "sold",
+  "clearing_price_zat": "650000000",
+  "winning_leaf": "347136fdd9cb4ed95875d5dabd439711e8e893778e04744a4eee5eda588a9167",
+  "winning_leaves": [
+    "347136fdd9cb4ed95875d5dabd439711e8e893778e04744a4eee5eda588a9167",
+    "2c0e2e91f2abcae365b376bca9f66d49dc274ce62d44e1aa7e63905692fd9d4a",
+    "7ce3418477291d1e84e0b57ee719d76ae4e9cd24bbc5e1fd23d801f77b83902d"
+  ],
+  "refund_txs": [
+    {
+      "txid": "5aad75473994cc13db9928bce9731e86bda9a8731b84c3363eac68f88a78a4c2",
+      "height": 3120101
+    },
+    {
+      "txid": "c72cd1c2940ce3d9373681fca2c3f3000f59e7874976df5c74e6d73d07183d30",
+      "height": 3120101
+    },
+    {
+      "txid": "06e89a7dd0d9e9844c5592a7e0faab86063033ffb6b7fc19630284ac2af98b77",
+      "height": 3120101
+    }
+  ],
+  "accounting": {
+    "refunded_zat": "3780005000",
+    "retained_zat": "1950000000",
+    "fees_zat": "0"
+  },
+  "refunds_commitment": "5222f476288509f28098d51f3570fc2db765c2e5b75896d39e209a371548e092"
+}

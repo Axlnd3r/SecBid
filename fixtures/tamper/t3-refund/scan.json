@@ -1,0 +1,108 @@
+{
+  "chain_tx_count": 7,
+  "chain_note_count": 7,
+  "notes": [
+    {
+      "txid": "56f73ce7225c86bb063e074a5b1a874454b953615c30bdb435b9f06537949bcc",
+      "height": 3119000,
+      "action_index": 0,
+      "value_zat": 500000000,
+      "cm": "f6c6fd70fb613e61aa840e371385509af4448e8999cf8b455aa102aaa96560dd",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund0secbid000000000000000000000000\"}",
+      "transparent_funded": false
+    },
+    {
+      "txid": "a1979ac06076b6412c21f7882e00bcf0baf3f790ea4db800ac36b70aeeb5289e",
+      "height": 3119200,
+      "action_index": 0,
+      "value_zat": 900000000,
+      "cm": "736c39217cb3405f282c043a3bf0b55209b26e4189f8f5521b99808b0ea5c163",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund1secbid000000000000000000000000\"}",
+      "transparent_funded": false
+    },
+    {
+      "txid": "500ad5cf9c25e8f2d3a5212a24fe796da4d5610c9faa49721be50de88a60e937",
+      "height": 3119400,
+      "action_index": 0,
+      "value_zat": 700000000,
+      "cm": "eda0b4dd86adf08ca6b70920a623eefef8e6730940d118d3c180384b2840fe20",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund2secbid000000000000000000000000\"}",
+      "transparent_funded": false
+    },
+    {
+      "txid": "60eb90252b68103311097c64fabfee713a9ba4a36176904f8b6d353775a89656",
+      "height": 3119600,
+      "action_index": 0,
+      "value_zat": 1200000000,
+      "cm": "bfb6207c97eb1dc63ec79b622e910ef0cd54f31e3c771a5b0d6e47be809be165",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund3secbid000000000000000000000000\"}",
+      "transparent_funded": false
+    },
+    {
+      "txid": "c2933ca05d68ddac1aaf121db0103c99c65eeddfd87ce88d16baf0a591176018",
+      "height": 3120100,
+      "action_index": 0,
+      "value_zat": 30000000,
+      "cm": "a68d6d40ba86f8cde0607d66b898b3cbcd4d01a61f69f7aa30bec0f6cc76e95c",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund4secbid000000000000000000000000\"}",
+      "transparent_funded": false
+    },
+    {
+      "txid": "c8840f989c7805e8c50ab4dc4fb903c40df47e7df6c4163841d3dfce50f097c2",
+      "height": 3119300,
+      "action_index": 0,
+      "value_zat": 5000,
+      "cm": "5935c54d30b624509de60f124350f77995b2772ca4e0bf418181bbd8e4f9fccb",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund5secbid000000000000000000000000\"}",
+      "transparent_funded": false
+    },
+    {
+      "txid": "3b237972132631858d645ed039e3c43b9d3b6ed31f827b8c90dc1b2f80593929",
+      "height": 3119500,
+      "action_index": 0,
+      "value_zat": 800000000,
+      "cm": "9b6cd752f892811724e85ea4f664d939f64a7a93f3c297cff9d921257f15be79",
+      "memo_raw": "{\"v\":1,\"refund\":\"u1refund6secbid000000000000000000000000\"}",
+      "transparent_funded": true
+    }
+  ],
+  "refund_outputs": [
+    {
+      "txid": "64e038f1fedff31a617d6bc0217babc696eeaf303c3f76a6aa278e9c7377f691",
+      "height": 3120101,
+      "address": "u1refund0secbid000000000000000000000000",
+      "value_zat": 500000000
+    },
+    {
+      "txid": "64e038f1fedff31a617d6bc0217babc696eeaf303c3f76a6aa278e9c7377f691",
+      "height": 3120101,
+      "address": "u1refund1secbid000000000000000000000000",
+      "value_zat": 900000000
+    },
+    {
+      "txid": "64e038f1fedff31a617d6bc0217babc696eeaf303c3f76a6aa278e9c7377f691",
+      "height": 3120101,
+      "address": "u1refund2secbid000000000000000000000000",
+      "value_zat": 700000000
+    },
+    {
+      "txid": "64e038f1fedff31a617d6bc0217babc696eeaf303c3f76a6aa278e9c7377f691",
+      "height": 3120101,
+      "address": "u1refund4secbid000000000000000000000000",
+      "value_zat": 30000000
+    },
+    {
+      "txid": "64e038f1fedff31a617d6bc0217babc696eeaf303c3f76a6aa278e9c7377f691",
+      "height": 3120101,
+      "address": "u1refund5secbid000000000000000000000000",
+      "value_zat": 5000
+    },
+    {
+      "txid": "64e038f1fedff31a617d6bc0217babc696eeaf303c3f76a6aa278e9c7377f691",
+      "height": 3120101,
+      "address": "u1refund6secbid000000000000000000000000",
+      "value_zat": 800000000
+    }
+  ],
+  "ovk": "d2162a49bfa99dd4fa44eb2989e78b40a0632878614232f8394a87f7df0940e7"
+}

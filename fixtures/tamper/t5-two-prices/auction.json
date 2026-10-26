@@ -1,0 +1,22 @@
+{
+  "spec": 2,
+  "auction_id": "aac0389f74bea0204a8084787207a853",
+  "network": "test",
+  "address": "u1secbiduniformauctionaddress00000000000000000000000000000000000000000",
+  "pool": "orchard",
+  "rule": "uniform",
+  "units": "3",
+  "reserve_zat": "100000000",
+  "min_bid_zat": "10000000",
+  "deadline_height": 3120000,
+  "confirmations": 3,
+  "mode": "public-tender",
+  "ovk_commitment": "385a1a8144bbd45612676b16d583f8492b0006b86ae56460df4aeb01091398ac",
+  "bond": {
+    "address": "u1secbidbondaddress0000000000000000000000000000000000000000000000",
+    "amount_zat": "100000000",
+    "commitment": "e9113c77542acbcf235b3d5668b880c9bac1c094cc7b6ee45ce8dcbab6d382d9"
+  },
+  "opened_at_height": 3110000,
+  "params_hash": "f59d4fa5756f99cd50a0ebf37c18c5c54d8cc9d1921f2cc04d659045ea2f8976"
+}
