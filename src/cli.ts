@@ -26,7 +26,7 @@ import {
 } from './auction.ts';
 import { classifyAll } from './clearing.ts';
 import { ovkCommitment } from './leaf.ts';
-import { parseMemo } from './memo.ts';
+import { parseMemo, refundPlaceholder } from './memo.ts';
 import { decodeProofMemo } from './proof.ts';
 import { JsonRpcClient } from './rpc.ts';
 import { createAuctionAccount, tipHeight, ZalletAdapter, zalletPoolSupport } from './zallet.ts';
@@ -564,10 +564,11 @@ async function runOpen(argv: string[]): Promise<number> {
   writeJson(opts.out, 'auction.json', encodeParams(params));
   if (account) writeJson(opts.out, 'account.json', encodeAccount(account));
 
+  const refund = refundPlaceholder(params.address);
   const memo =
     params.spec === 2
-      ? Buffer.from(JSON.stringify({ v: 2, refund: 'u1<your fresh shielded address>', qty: '1' }), 'utf8')
-      : Buffer.from(JSON.stringify({ v: 1, refund: 'u1<your fresh shielded address>' }), 'utf8');
+      ? Buffer.from(JSON.stringify({ v: 2, refund, qty: '1' }), 'utf8')
+      : Buffer.from(JSON.stringify({ v: 1, refund }), 'utf8');
   const uri = buildPaymentUri({ address: params.address, memo: new Uint8Array(memo) });
 
   console.log(`opened auction ${params.auction_id}  (${params.network}, spec ${params.spec})`);
@@ -1000,10 +1001,11 @@ function runUri(argv: string[]): number {
     console.error(`cannot read ${join(dir, 'auction.json')}`);
     return 2;
   }
+  const refund = refundPlaceholder(params.address);
   const memo =
     params.spec === 2
-      ? Buffer.from(JSON.stringify({ v: 2, refund: 'u1<your fresh shielded address>', qty: '1' }), 'utf8')
-      : Buffer.from(JSON.stringify({ v: 1, refund: 'u1<your fresh shielded address>' }), 'utf8');
+      ? Buffer.from(JSON.stringify({ v: 2, refund, qty: '1' }), 'utf8')
+      : Buffer.from(JSON.stringify({ v: 1, refund }), 'utf8');
   const uri = buildPaymentUri({ address: params.address, memo: new Uint8Array(memo) });
   console.log(`address      ${params.address}`);
   console.log(`rule         ${params.rule}${params.rule === 'uniform' ? `, ${params.units} units` : ''}`);

@@ -20,8 +20,47 @@ const DECIMAL = /^(0|[1-9][0-9]*)$/;
 const V1_KEYS = new Set(['v', 'refund', 'label']);
 const V2_KEYS = new Set(['v', 'refund', 'qty']);
 
+export type AddressNetwork = 'main' | 'test' | 'regtest';
+
+// Bech32m HRPs from ZIP-316 (unified) and ZIP-32 (Sapling). Longest prefix first
+// is not needed: none of these is a prefix of another.
+const SHIELDED_PREFIXES: ReadonlyArray<[string, AddressNetwork, boolean]> = [
+  ['u1', 'main', true],
+  ['utest1', 'test', true],
+  ['uregtest1', 'regtest', true],
+  ['zs1', 'main', false],
+  ['ztestsapling1', 'test', false],
+  ['zregtestsapling1', 'regtest', false],
+];
+
+const UFVK_PREFIXES = ['uview1', 'uviewtest1', 'uviewregtest1'];
+
+/** Network of a shielded address by its HRP, or null if it is not shielded. */
+export function addressNetwork(address: unknown): AddressNetwork | null {
+  if (typeof address !== 'string') return null;
+  const hit = SHIELDED_PREFIXES.find(([prefix]) => address.startsWith(prefix));
+  return hit ? hit[1] : null;
+}
+
 export function isShieldedAddress(address: unknown): address is string {
-  return typeof address === 'string' && (address.startsWith('u1') || address.startsWith('zs1'));
+  return addressNetwork(address) !== null;
+}
+
+/** Unified (not Sapling-only) address on any network. */
+export function isUnifiedAddress(address: unknown): address is string {
+  if (typeof address !== 'string') return false;
+  return SHIELDED_PREFIXES.some(([prefix, , unified]) => unified && address.startsWith(prefix));
+}
+
+export function isUnifiedViewingKey(key: unknown): key is string {
+  return typeof key === 'string' && UFVK_PREFIXES.some((prefix) => key.startsWith(prefix));
+}
+
+/** Placeholder refund address shown in a bid memo template, on the auction's network. */
+export function refundPlaceholder(auctionAddress: string): string {
+  const net = addressNetwork(auctionAddress);
+  const prefix = net === 'test' ? 'utest1' : net === 'regtest' ? 'uregtest1' : 'u1';
+  return `${prefix}<your fresh shielded address>`;
 }
 
 export type MemoParse =

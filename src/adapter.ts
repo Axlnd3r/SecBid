@@ -71,7 +71,7 @@ export async function choosePool(
     pool: 'orchard',
     warning:
       `pool auto fell back to orchard: ${ironwood.reason ?? 'Ironwood support was not confirmed'}. ` +
-      'Recorded in auction.json; see docs/OPEN-QUESTIONS.md.',
+      'Recorded in auction.json; see OPEN-QUESTIONS.md.',
   };
 }
 

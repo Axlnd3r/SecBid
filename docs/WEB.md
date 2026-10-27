@@ -65,31 +65,52 @@ showing a green tick it did not earn. `fixture` mode runs the full rescan server
 
 | Reference | Taken |
 |---|---|
-| **[xmcp.dev](https://xmcp.dev/)** | The shell: a pure-black canvas, centred logo in the nav with links to its left and a bordered field to its right, a badge pill above a centred display headline, one piece of artwork between the headline and the buttons, a filled white primary button next to an outlined one, and a "verifiable with" wordmark row where the reference puts its trusted-by logos. Mono is reserved for numbers and hashes. The hero artwork follows the reference's move — a large grain-rendered mark floating on black — rather than its actual asset: ours is drawn from the Secbid X and generated in the browser. |
-| **[dark.design](https://www.dark.design/site/xmcp-1778330101992)** | The restraint. One accent, and it is white; no gradients on text, no glassmorphism, no grain, generous section padding, type doing the work instead of ornament. Dark-only, like both references. |
-| **[scrolltide — focus reveal](https://www.scrolltide.co/#c-focus-reveal)** | The motion: content arrives out of focus (`blur(7px)`, 16px below, 0 opacity) and sharpens once as it enters the viewport, staggered 70ms per sibling, capped at 280ms. It runs once and never loops, so it cannot compete with data the reader is checking. |
+| **[xmcp.dev](https://xmcp.dev/)** (the 2026 hero archived on dark.design) | The shell: a pure-black canvas, centred logo in the nav with links to its left and a bordered field to its right, a plain label plus a squared chip above a centred display headline (`v0.6.9 [LATEST VERSION]` there, `auction aac0…a853 [TESTNET · SETTLED]` here), one piece of artwork between the headline and the buttons, a square white button next to one outlined in near-white, and a "verifiable with" wordmark row where the reference puts its trusted-by logos. Mono is reserved for numbers and hashes. The artwork takes the reference's idea — a dithered X — not its asset, and swaps the scene for a gavel and bolt that make the X: ours is generated in the browser from shapes and noise (below). |
+| **[dark.design](https://www.dark.design/site/xmcp-1778330101992)** | The restraint. One accent, and it is white; no gradients on text, no glassmorphism, generous section padding, type doing the work instead of ornament. Dark-only, like both references. The rounded frame around the screenshot on that page is the gallery's card, not part of xmcp, so it is not reproduced. |
+| **[scrolltide — focus reveal](https://www.scrolltide.co/#c-focus-reveal)** | Headings: words sit blurred until a camera-style focus frame (four corner brackets) travels to each one and pulls it sharp, stretching across both word boxes on the way instead of jumping. Rebuilt from the component's public description (`web/assets/focus.js`); the paid prompt was not used. Other blocks keep the simpler block reveal: out of focus (`blur(7px)`, 16px below, 0 opacity), sharpened once on entry, staggered 70ms per sibling, capped at 280ms. |
 
 What was deliberately not imported: perpetual parallax, marquees, cursor effects, scroll-jacking,
 and animated counters. On a page whose job is to let someone check a Merkle root, motion that keeps
 moving is a bug.
 
-### The mark in the hero
+### The artwork in the hero
 
-The hero artwork is one inline SVG: four tapered arms and a core, blurred, then thresholded against
-`feTurbulence` so the silhouette breaks into grain and sheds dust at its edges (`feComposite`
-`arithmetic` + a discrete alpha step). It is deterministic — same seed, same speckles — costs a few
-hundred bytes instead of a raster asset, scales with the viewport, and needs no extra request. The
-filter is static; nothing in it animates.
+`web/assets/hero-art.js` draws the Secbid X as an auction gavel crossed with a bolt of light, as
+grain. The sledgehammer runs from the upper left to the lower right, the bolt cuts across it from
+the upper right, and together they form the X, keeping the reference's idea (a dithered X) while
+making the theme an auction. The gavel/bolt pairing follows the "Auction Logo" reference
+(Dribbble, via Pinterest); the shapes are drawn from scratch, not traced or copied.
+
+- Both shapes are canvas paths rasterised into soft masks on a 360×300 grid. A brightness field is
+  built once: a rim light found by sampling each cell toward the light (from above, slightly left),
+  light streaks inside the shapes, a knock-out gap where the bolt crosses the handle, noisy edges
+  that shed dust, and a faint smoke aura around the whole mark.
+- `stipple()` turns brightness into dots: each cell lights with probability equal to its
+  brightness, from a seeded xorshift, so the same seed prints the same grain. It is pure and tested
+  in `tests/web.test.ts`.
+- **Hover** (after the image has developed): the mark is read through scan lines (every third row
+  dims) and a lens around the cursor bends the rows under them, like the "One framework to rule
+  them all" mark on xmcp.dev. `warp()` is pure and tested. The effect eases in and out over
+  ~140 ms and the frame loop stops as soon as the pointer is still and the level has settled; it
+  reuses one grain seed, so hovering never reshuffles the dots. Reduced motion never runs it; on a touch screen it follows a finger
+  drag over the mark. The reference's blackletter heading and RGB split were not copied.
+- The image *develops* once on load (density rises over 1.6 s) and then holds still. No raster
+  asset, no request; the canvas is scaled with `image-rendering: pixelated`.
+- The previous inline SVG mark stays in the markup as the fallback when a 2D canvas is missing.
 
 ### Motion contract
 
 - `.reveal` is armed by JS only (`html.reveal-armed`), so a failed script leaves the page readable
   rather than blank.
 - `IntersectionObserver` adds `.is-in`, then unobserves. Delay comes from `--d`, set per sibling.
+- Headings (`h1[data-focus]`, `.section-head h2`) are split into word spans by `focus.js` only when
+  JS runs; each heading runs its focus frame once, when 60% of it is in view. Section headings are
+  armed after render, because the result headline is filled in by script. If the animation throws,
+  every word is made sharp.
 - Terminal lines fade in at 55ms intervals, once.
-- `prefers-reduced-motion: reduce` disables all of it: reveals are visible, terminal lines appear at once.
-- Exactly one thing animates on a loop: the live pulse in the hero badge. Everything else settles
-  and stops.
+- `prefers-reduced-motion: reduce` disables all of it: headings are never split or blurred, the
+  artwork is printed at full density at once, reveals are visible, terminal lines appear at once.
+- Nothing animates on a loop. Everything settles and stops.
 
 ### Tokens
 

@@ -1,4 +1,5 @@
 import { ZAT_PER_ZEC } from './model.ts';
+import { isShieldedAddress } from './memo.ts';
 
 /**
  * ZIP-321 payment request.
@@ -9,9 +10,11 @@ import { ZAT_PER_ZEC } from './model.ts';
  * amount (their bid) and carries the memo through unchanged. That is the whole
  * "no app to install" claim: the bid is a payment, and the payment is the bid.
  *
- * `memo` is standard base64 over the raw memo bytes, percent-encoded by
- * URLSearchParams. Wallets that do not implement the memo parameter are listed
- * as a Day-1 spike risk: a dropped memo produces a `stranded` note.
+ * `memo` is base64url over the raw memo bytes with `=` padding omitted, as
+ * ZIP-321 requires; wallets MUST reject `+`, `/` and `=`. The parser also
+ * accepts the standard alphabet so URIs printed by older builds still decode.
+ * Wallets that do not implement the memo parameter are listed as a Day-1 spike
+ * risk: a dropped memo produces a `stranded` note.
  */
 
 export interface PaymentUri {
@@ -35,14 +38,14 @@ export function zecToZat(zec: string): bigint {
 }
 
 export function buildPaymentUri(req: PaymentUri): string {
-  if (!/^u1[0-9a-z]+$/.test(req.address) && !/^zs1[0-9a-z]+$/.test(req.address)) {
+  if (!/^[0-9a-z]+$/.test(req.address) || !isShieldedAddress(req.address)) {
     throw new Error(`not a shielded address: ${req.address}`);
   }
   const params = new URLSearchParams();
   if (req.amount_zat !== undefined) params.set('amount', zatToZec(req.amount_zat));
   if (req.memo && req.memo.length > 0) {
     if (req.memo.length > 512) throw new Error(`memo is ${req.memo.length} bytes, max 512`);
-    params.set('memo', Buffer.from(req.memo).toString('base64'));
+    params.set('memo', Buffer.from(req.memo).toString('base64url'));
   }
   if (req.message) params.set('message', req.message);
   const qs = params.toString();
@@ -60,7 +63,8 @@ export function parsePaymentUri(uri: string): PaymentUri {
   const amount = params.get('amount');
   if (amount !== null) out.amount_zat = zecToZat(amount);
   const memo = params.get('memo');
-  if (memo !== null) out.memo = new Uint8Array(Buffer.from(memo, 'base64'));
+  // Node's base64url decoder also accepts `+`, `/` and padding.
+  if (memo !== null) out.memo = new Uint8Array(Buffer.from(memo, 'base64url'));
   const message = params.get('message');
   if (message !== null) out.message = message;
   return out;

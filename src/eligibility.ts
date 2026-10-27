@@ -1,12 +1,13 @@
 import type { AuctionParams, PreOutcome, ReceivedNote } from './model.ts';
 import { noteKey } from './model.ts';
 import { leafHex } from './leaf.ts';
-import { isShieldedAddress, parseMemo } from './memo.ts';
+import { addressNetwork, isShieldedAddress, parseMemo } from './memo.ts';
 
 /**
  * Eligibility rules, blueprint §5. Evaluated in order; the first failure wins.
  *
  *   E2 stranded             memo missing / unparseable / refund address not shielded
+ *                           or on a different network than the auction address
  *   E1 late                 height > deadline_height
  *   E3 dust                 value < min_bid_zat × qty
  *   E4 transparent_funded   any transparent input in the funding tx
@@ -52,6 +53,11 @@ export function classify(
   const reused = reusedAddresses.has(memo.refund);
   const base = { key, leaf, qty: memo.qty, refund_address: memo.refund, refund_reused: reused, memo_v: memo.v };
 
+  if (addressNetwork(memo.refund) !== addressNetwork(params.address)) {
+    // A refund to another network cannot be sent: the wallet rejects it and the
+    // whole batch with it. Same outcome as an unusable address.
+    return { ...base, pre: 'stranded', reason: 'refund_wrong_network' };
+  }
   if (params.spec === 1 && memo.v !== 1) {
     return { ...base, pre: 'stranded', reason: 'memo_v2_not_allowed' };
   }

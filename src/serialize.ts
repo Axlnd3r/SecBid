@@ -13,6 +13,7 @@ import type {
   Settlement,
 } from './model.ts';
 import { canonicalHash } from './canonical.ts';
+import { isShieldedAddress } from './memo.ts';
 
 /**
  * Artifact codecs.
@@ -101,7 +102,7 @@ function decodeBond(value: unknown): Bond | null {
   if (value === null || value === undefined) return null;
   const raw = record(value, 'bond');
   const address = str(raw.address, 'bond.address');
-  if (!address.startsWith('u1') && !address.startsWith('zs1')) {
+  if (!isShieldedAddress(address)) {
     throw new Error('bond.address: must be a shielded address');
   }
   return {
@@ -134,7 +135,7 @@ export function decodeParams(value: unknown): AuctionParams {
   if (base.auction_id.length !== (spec === 1 ? 16 : 32) || !/^[0-9a-f]+$/i.test(base.auction_id)) {
     throw new Error(`auction_id: expected ${spec === 1 ? 16 : 32} hex chars for spec ${spec}`);
   }
-  if (!base.address.startsWith('u1') && !base.address.startsWith('zs1')) {
+  if (!isShieldedAddress(base.address)) {
     throw new Error('address: auction address must be shielded');
   }
 

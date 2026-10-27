@@ -2,9 +2,10 @@
  * Secbid — auction page
  *
  * Shell follows xmcp.dev: a pure-black canvas, one white accent, hairline 1px
- * borders, a centred hero with a badge pill and a single piece of artwork, and
- * mono only where a number or hash has to be read. Motion follows the scrolltide
- * "focus reveal": content arrives out of focus and sharpens once, staggered —
+ * borders, a centred hero with a label + squared chip, a dithered scene seen
+ * through an X, square buttons, and mono only where a number or hash has to be
+ * read. Motion follows the scrolltide "focus reveal": heading words wait out of
+ * focus until a camera frame reaches them; blocks sharpen once, staggered —
  * never a perpetual animation competing with the data.
  * ───────────────────────────────────────────────────────────────────────── */
 
@@ -320,39 +321,31 @@ button {
   color: var(--ink-2);
 }
 
-.hero-badges .eyebrow {
-  padding: 6px 13px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  background: var(--surface-0);
+/* "v0.6.9 [LATEST VERSION]" in the reference: a plain label, then a squared chip. */
+.hero-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+.hero-version .mono {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.version-chip {
+  padding: 3px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: var(--surface-2);
   color: var(--ink-1);
-}
-
-.eyebrow-sep {
-  width: 1px;
-  height: 11px;
-  background: var(--line-strong);
-  flex: none;
-}
-
-.eyebrow-note {
-  color: var(--ink-2);
-}
-
-.pulse {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55);
-  animation: pulse 2.6s var(--ease) infinite;
-  flex: none;
-}
-
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); }
-  60% { box-shadow: 0 0 0 9px rgba(255, 255, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .display {
@@ -377,6 +370,22 @@ button {
   margin-top: clamp(24px, 3vw, 38px);
 }
 
+/* The reference pairs a white button with one outlined in near-white, not a hairline. */
+.cta-row .btn {
+  height: 40px;
+  padding: 0 20px;
+  font-weight: 450;
+}
+
+.cta-row .btn:not(.btn-primary) {
+  border-color: rgba(255, 255, 255, 0.78);
+}
+
+.cta-row .btn:not(.btn-primary):hover {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -384,7 +393,7 @@ button {
   gap: 7px;
   height: 42px;
   padding: 0 18px;
-  border-radius: var(--r-md);
+  border-radius: 3px;
   border: 1px solid var(--line-strong);
   background: transparent;
   color: var(--ink);
@@ -564,6 +573,24 @@ button {
   width: min(100%, clamp(244px, 25vw, 332px));
   aspect-ratio: 1;
   margin: clamp(22px, 2.6vw, 34px) auto 0;
+}
+
+/* Generated grain (hero-art.js): wider than the SVG mark, like the reference's scene. */
+.hero-art[data-art="canvas"] {
+  width: min(100%, clamp(330px, 40vw, 580px));
+  aspect-ratio: 6 / 5;
+}
+
+.hero-art[data-art="canvas"] .hero-x,
+.hero-art[data-art="canvas"] .hero-x-halo {
+  display: none;
+}
+
+.hero-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
 }
 
 .hero-x {
@@ -1745,6 +1772,55 @@ table.entries {
     transform 900ms var(--ease) var(--d, 0ms);
 }
 
+/* Headings: words wait out of focus until a camera frame reaches them (focus.js). */
+
+.fr-host {
+  position: relative;
+}
+
+.fr-word {
+  display: inline-block;
+}
+
+.fr-armed .fr-word {
+  filter: blur(6px);
+  opacity: 0.3;
+  transition:
+    filter 560ms var(--ease),
+    opacity 560ms var(--ease);
+}
+
+.fr-armed .fr-word.is-sharp {
+  filter: none;
+  opacity: 1;
+}
+
+.fr-frame {
+  --fr-c: clamp(6px, 0.26em, 12px);
+  --fr-t: 1.5px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 260ms var(--ease);
+  background:
+    linear-gradient(currentColor 0 0) left top / var(--fr-c) var(--fr-t),
+    linear-gradient(currentColor 0 0) left top / var(--fr-t) var(--fr-c),
+    linear-gradient(currentColor 0 0) right top / var(--fr-c) var(--fr-t),
+    linear-gradient(currentColor 0 0) right top / var(--fr-t) var(--fr-c),
+    linear-gradient(currentColor 0 0) left bottom / var(--fr-c) var(--fr-t),
+    linear-gradient(currentColor 0 0) left bottom / var(--fr-t) var(--fr-c),
+    linear-gradient(currentColor 0 0) right bottom / var(--fr-c) var(--fr-t),
+    linear-gradient(currentColor 0 0) right bottom / var(--fr-t) var(--fr-c);
+  background-repeat: no-repeat;
+}
+
+.fr-frame.is-on {
+  opacity: 0.9;
+}
+
 /* ── responsive ────────────────────────────────────────────────────────── */
 
 @media (max-width: 1080px) {
@@ -1796,16 +1872,19 @@ table.entries {
     padding: 6px 9px;
   }
 
-  .hero-badges .eyebrow {
+  .hero-badges {
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
-  .eyebrow-sep,
-  .eyebrow-note {
-    display: none;
+  .hero-version {
+    min-width: 0;
+  }
+
+  /* the ellipsis has to sit on the text span: a flex container never draws one */
+  .hero-version [data-eyebrow] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

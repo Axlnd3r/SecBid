@@ -1,6 +1,6 @@
 import type { NotePool, Pool, ReceivedNote, RefundTx } from './model.ts';
 import type { ChainAdapter, PoolSupport, RefundOutput } from './adapter.ts';
-import { isShieldedAddress } from './memo.ts';
+import { isShieldedAddress, isUnifiedAddress, isUnifiedViewingKey } from './memo.ts';
 import { sortLeavesOrder } from './merkle.ts';
 import { zatToZec } from './zip321.ts';
 import type { JsonRpcClient } from './rpc.ts';
@@ -129,7 +129,7 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promis
 
 /**
  * Wallet pool capability. Ironwood support is unconfirmed for the Zallet release
- * this adapter targets (docs/OPEN-QUESTIONS.md). Reporting it as supported would
+ * this adapter targets (OPEN-QUESTIONS.md). Reporting it as supported would
  * be a guess, and `--pool auto` would then record the wrong pool.
  */
 export function zalletPoolSupport(pool: Pool): PoolSupport {
@@ -138,7 +138,7 @@ export function zalletPoolSupport(pool: Pool): PoolSupport {
     supported: false,
     reason:
       'Ironwood account creation is not confirmed for this Zallet release ' +
-      '(docs/OPEN-QUESTIONS.md); staying in Orchard',
+      '(OPEN-QUESTIONS.md); staying in Orchard',
   };
 }
 
@@ -169,7 +169,7 @@ export async function createAuctionAccount(
     // Do not guess the Ironwood RPC shape. OPEN-QUESTIONS.md asks Zallet for it.
     throw new Error(
       'zallet: creating an Ironwood account is not confirmed on this Zallet release; ' +
-        'see docs/OPEN-QUESTIONS.md. Use --pool orchard (or auto, which falls back).',
+        'see OPEN-QUESTIONS.md. Use --pool orchard (or auto, which falls back).',
     );
   }
   const account = await rpc.call<{ account_uuid?: unknown }>('z_getnewaccount', [name]);
@@ -194,7 +194,7 @@ export async function createAuctionAccount(
   }
 
   const ufvk = await rpc.call<unknown>('z_exportviewingkey', [address]);
-  if (typeof ufvk !== 'string' || !ufvk.startsWith('uview1')) {
+  if (!isUnifiedViewingKey(ufvk)) {
     throw new Error('zallet: z_exportviewingkey did not return a unified full viewing key');
   }
 
@@ -379,7 +379,7 @@ export class ZalletAdapter implements ChainAdapter {
     // A Sapling refund address makes this a cross-pool transfer, whose net
     // amount is public. Ask for exactly that instead of silently relaxing the
     // policy for every batch.
-    const shieldedOnly = outputs.every((o) => o.address.startsWith('u1'));
+    const shieldedOnly = outputs.every((o) => isUnifiedAddress(o.address));
     // Zallet accepts the amount as a string and parses it as a fixed-point
     // decimal. A JSON number would serialise 1 zat as `1e-8`, which is not the
     // decimal form the parser expects.

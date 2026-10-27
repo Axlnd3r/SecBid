@@ -10,6 +10,9 @@ import { checkProofMemo } from '../src/auction.ts';
 import { decodeSettlement } from '../src/serialize.ts';
 import type { ProofMap } from '../src/model.ts';
 import { buildMemo, bytesToB64, flipMemoPrice, verifyMemo } from '../web/assets/proofcheck.js';
+import { verifyTranscript } from '../web/assets/transcript.js';
+import { frameAt } from '../web/assets/focus.js';
+import { ART_H, ART_W, stipple, warp } from '../web/assets/hero-art.js';
 
 /**
  * Two things are tested here that nothing else can test:
@@ -154,6 +157,31 @@ describe('web api', () => {
     }
   });
 
+  it('paints the terminal for the artifact set that was verified, not the one loaded first', async () => {
+    const { auctions } = (await (await fetch(`${base}/api/auctions`)).json()) as {
+      auctions: Array<{ slug: string; kind: 'honest' | 'tamper'; auction_id: string; entries: number }>;
+    };
+    const text = (lines: Array<Array<[string, string]>>) => lines.map((l) => l.map(([t]) => t).join(''));
+
+    const t1 = auctions.find((a) => a.slug === 't1-price')!;
+    const { report } = (await (await fetch(`${base}/api/auction/t1-price/report`)).json()) as {
+      report: Parameters<typeof verifyTranscript>[0]['report'];
+    };
+    const tampered = verifyTranscript({ ...t1, report }, { C7: 'clearing recompute' });
+    assert.equal(tampered.status, 'FAIL');
+    assert.equal(text(tampered.lines)[0], '$ node src/cli.ts verify fixtures/tamper/t1-price');
+    assert.match(text(tampered.lines).at(-1)!, /^RESULT: FAIL C7: /);
+    assert.ok(text(tampered.lines).some((l) => /C7\s+FAIL clearing recompute/.test(l)));
+
+    const audit = (await (await fetch(`${base}/api/auction/auction-01/report?mode=audit`)).json()) as {
+      report: Parameters<typeof verifyTranscript>[0]['report'];
+    };
+    const partial = verifyTranscript({ ...auctions[0], report: audit.report });
+    assert.equal(partial.status, 'PARTIAL');
+    assert.match(text(partial.lines)[1], /audit mode/);
+    assert.match(text(partial.lines).at(-1)!, /^RESULT: PARTIAL \(\d+\/14 checks; \d+ skipped\)$/);
+  });
+
   it('skips the chain-dependent checks in audit mode and says PARTIAL', async () => {
     const { report } = (await (
       await fetch(`${base}/api/auction/auction-01/report?mode=audit`)
@@ -182,6 +210,83 @@ describe('web api', () => {
     assert.equal((await fetch(`${base}/api/auction/nope`)).status, 404);
     assert.equal((await fetch(`${base}/nope.html`)).status, 404);
     assert.equal((await fetch(`${base}/api/nope`)).status, 404);
+  });
+});
+
+describe('page motion and artwork', () => {
+  const word = (x: number, y: number, w: number, h = 40) => ({ x, y, w, h });
+
+  it('moves the focus frame from one word box to the next, stretching on the way', () => {
+    const from = word(0, 0, 80);
+    const to = word(120, 0, 40);
+    assert.deepEqual(frameAt(from, to, 0), from);
+    assert.deepEqual(frameAt(from, to, 1), to);
+
+    const mid = frameAt(from, to, 0.5);
+    assert.ok(mid.x < 60, 'the trailing (left) edge is still near the first word');
+    assert.ok(mid.x + mid.w > 140, 'the leading (right) edge is already near the second word');
+    assert.ok(mid.w > Math.max(from.w, to.w), 'mid-flight the frame spans both words');
+  });
+
+  it('never gives the focus frame a negative size, in any direction or wrap', () => {
+    const boxes = [word(0, 0, 80), word(300, 0, 20), word(10, 60, 200), word(250, 60, 60), word(5, 120, 30, 50)];
+    for (const from of boxes) {
+      for (const to of boxes) {
+        for (let i = 0; i <= 20; i++) {
+          const f = frameAt(from, to, i / 20);
+          assert.ok(f.w >= -1e-9 && f.h >= -1e-9, `${JSON.stringify({ from, to, t: i / 20, f })}`);
+        }
+      }
+    }
+  });
+
+  it('leaves the picture alone until the hover lens eases in, then bends and scans it', () => {
+    const w = 120;
+    const h = 90;
+    const prob = new Uint8Array(w * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) prob[y * w + x] = (x * 7 + y * 13) % 256;
+    const out = new Uint8Array(w * h);
+
+    warp(prob, out, w, h, { cx: 60, cy: 45, level: 0 });
+    assert.deepEqual(Array.from(out), Array.from(prob), 'level 0 is the identity');
+
+    warp(prob, out, w, h, { cx: 60, cy: 45, level: 1 });
+    for (let x = 0; x < w; x++) {
+      assert.ok(out[2 * w + x] <= 26, 'every third row is a dark scan line (at most 10% of full)');
+      assert.ok(out[5 * w + x] <= 26, 'and so is the next');
+    }
+    assert.notDeepEqual(Array.from(out.slice(40 * w, 41 * w)), Array.from(prob.slice(40 * w, 41 * w)), 'rows near the cursor bend');
+    warp(prob, out, w, h, { cx: 60, cy: 45, level: 1, radius: 8, rows: 1000 });
+    assert.deepEqual(Array.from(out.slice(0, w)), Array.from(prob.slice(0, w)), 'rows far outside the lens are untouched');
+
+    const lone = new Uint8Array(w * h);
+    lone[45 * w + 40] = 255;
+    warp(lone, out, w, h, { cx: 60, cy: 45, level: 1, rows: 1000 });
+    assert.ok(out[45 * w + 40] === 0 && out.some((v, i) => v === 255 && i % w < 40), 'the lens magnifies: a speck left of the cursor moves further left');
+  });
+
+  it('prints grain deterministically, with density following brightness', () => {
+    const n = ART_W * ART_H;
+    const out = new Uint32Array(n);
+    const lit = () => out.reduce((sum, v) => sum + (v ? 1 : 0), 0);
+
+    stipple(new Uint8Array(n), out, 7);
+    assert.equal(lit(), 0, 'a black field prints nothing');
+
+    stipple(new Uint8Array(n).fill(255), out, 7);
+    assert.ok(lit() / n > 0.99, 'a white field prints (almost) every cell');
+
+    const half = new Uint8Array(n).fill(128);
+    const next = stipple(half, out, 7);
+    assert.ok(Math.abs(lit() / n - 0.5) < 0.02, `half grey prints about half: ${lit() / n}`);
+    const first = Array.from(out);
+    stipple(half, out, 7);
+    assert.deepEqual(Array.from(out), first, 'same seed, same grain');
+    stipple(half, out, next);
+    assert.notDeepEqual(Array.from(out), first, 'the returned seed moves on');
+
+    stipple(new Uint8Array(n).fill(255), out, 7, 0);
+    assert.equal(lit(), 0, 'gain 0 (the start of the develop-in) prints nothing');
   });
 });
 

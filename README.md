@@ -78,7 +78,7 @@ Zcash is migrating shielded funds to a quantum-**recoverable** pool (ZIP 2005). 
 - opens the auction account in the recoverable pool when the connected wallet supports it
   (`--pool auto|ironwood|orchard`), and records which pool was used in the artifacts. Zallet's
   Ironwood account RPC is not confirmed yet, so the adapter refuses to guess and `auto` falls back
-  to Orchard with a warning recorded in `auction.json` (see `docs/OPEN-QUESTIONS.md`);
+  to Orchard with a warning recorded in `auction.json` (see [`OPEN-QUESTIONS.md`](OPEN-QUESTIONS.md));
 - requires a **one-time refund address** per bid, so publishing the UFVK cannot be used later to
   link a bidder's wider history;
 - ships `secbid quantum-report`, which lists what in an auction is exposed to a future

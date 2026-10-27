@@ -18,6 +18,9 @@ never a pass.
 - [ ] Max outputs per transaction under NU7 per-block action limits — confirm a safe `--max-outputs`
       default. The default is 40 (`DEFAULT_MAX_OUTPUTS_PER_TX`), chosen conservatively; a live run
       should measure the wallet's ZIP-225 limit and replace it.
+      Partial answer (2026-10-27): Zallet's `[builder.limits] orchard_actions` defaults to 50 per
+      transaction (`zallet example-config`, v0.1.0-beta.3), so 40 outputs fit. Still unmeasured on a
+      live send.
 - [ ] Does `z_sendmany` preserve output order, or return one txid that cannot be mapped to a chunk?
       The adapter requires one txid per call and refuses a wallet-internal split; lower
       `--max-outputs` and retry instead of guessing which output landed where.

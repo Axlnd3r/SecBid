@@ -14,6 +14,9 @@ import {
   flipMemoPrice,
   verifyMemo,
 } from './proofcheck.js';
+import { verifyTranscript } from './transcript.js';
+import { mountHeroArt } from './hero-art.js';
+import { armFocusReveal } from './focus.js';
 
 const ZAT_PER_ZEC = 100000000n;
 const GROUP = new Intl.NumberFormat('en-US');
@@ -206,10 +209,17 @@ function renderHero(bundle) {
   const { auction, settlement, chain, report } = bundle;
   const network = auction.network === 'test' ? 'testnet' : auction.network === 'main' ? 'mainnet' : auction.network;
 
-  $('[data-eyebrow]').textContent = `auction ${auction.auction_id} · ${network}`;
+  const phase =
+    chain.tip_height < auction.deadline_height
+      ? 'bidding open'
+      : chain.tip_height < settlement.settle_height
+        ? 'settling'
+        : 'settled';
+  const eyebrow = $('[data-eyebrow]');
+  eyebrow.textContent = `auction ${short(auction.auction_id, 8)}`;
+  eyebrow.title = auction.auction_id;
   $('[data-network]').textContent = network;
-  $('[data-rule-note]').textContent =
-    settlement.rule === 'uniform' ? `uniform · ${settlement.units} units` : 'first price · single lot';
+  $('[data-rule-note]').textContent = `${network} · ${phase}`;
   $('[data-auction-id]').textContent = auction.auction_id;
   $('[data-tip]').textContent = GROUP.format(chain.tip_height);
   $('[data-fact="price"]').textContent =
@@ -220,13 +230,13 @@ function renderHero(bundle) {
   $('[data-fact="refunds"]').textContent = `${refunded} in ${settlement.refund_txs.length} tx`;
   $('[data-fact="checks"]').textContent = `${report.checks.filter((c) => c.status === 'pass').length}/${report.checks.length}`;
 
-  const status = report.status ?? (report.ok ? 'PASS' : 'FAIL');
-  const tag = $('[data-terminal-verdict]');
-  tag.textContent = status;
-  tag.dataset.verdict = status === 'PASS' ? 'pass' : status === 'PARTIAL' ? 'partial' : 'fail';
-  $('[data-terminal-time]').textContent = `loaded ${new Date().toISOString().slice(11, 19)}Z`;
-
-  renderTerminal(bundle);
+  renderTerminal({
+    slug: bundle.slug,
+    kind: bundle.kind,
+    auction_id: auction.auction_id,
+    entries: settlement.entries.length,
+    report,
+  });
 }
 
 function termLine(parts, cls = '') {
@@ -237,51 +247,27 @@ function termLine(parts, cls = '') {
   return line;
 }
 
-function renderTerminal(bundle) {
+// Bumped on every paint so a typing animation from an earlier run stops
+// instead of interleaving its lines with the new transcript.
+let terminalRun = 0;
+
+function renderTerminal(view) {
   const out = $('[data-terminal]');
   if (!out) return;
   out.replaceChildren();
 
-  const dir = bundle.kind === 'honest' ? `fixtures/${bundle.slug}` : `fixtures/tamper/${bundle.slug}`;
-  const { auction, settlement, report } = bundle;
-  const passes = report.checks.filter((c) => c.status === 'pass').length;
+  const { status, lines: parts } = verifyTranscript(view, CHECK_LABEL);
+  const tag = $('[data-terminal-verdict]');
+  tag.textContent = status;
+  tag.dataset.verdict = status === 'PASS' ? 'pass' : status === 'PARTIAL' ? 'partial' : 'fail';
+  $('[data-terminal-time]').textContent = `loaded ${new Date().toISOString().slice(11, 19)}Z`;
 
-  const lines = [
-    termLine([['$ ', 'term-accent'], [`node src/cli.ts verify ${dir}`, 'term-key']]),
-    termLine([
-      [`auction ${auction.auction_id}`, 'term-dim'],
-      ['  ·  ', 'term-dim'],
-      [`${report.mode} mode`, 'term-dim'],
-      ['  ·  ', 'term-dim'],
-      [`${settlement.entries.length} entries`, 'term-dim'],
-    ]),
-  ];
-
-  for (const check of report.checks) {
-    const status = check.status === 'pass' ? 'pass' : check.status === 'fail' ? 'FAIL' : 'skip';
-    lines.push(
-      termLine([
-        [`  ${check.code.padEnd(4)}`, 'term-dim'],
-        [`${status.padEnd(5)}`, check.status === 'pass' ? 'term-pass' : check.status === 'fail' ? 'term-fail' : 'term-dim'],
-        [CHECK_LABEL[check.code] ?? check.description ?? '', 'term-key'],
-      ]),
-    );
-  }
-
-  lines.push(termLine([['', '']]));
-  const status = report.status ?? (report.ok ? 'PASS' : 'FAIL');
-  lines.push(
-    status === 'FAIL'
-      ? termLine([[`RESULT: FAIL ${report.failures[0]?.code ?? ''}: ${report.failures[0]?.message ?? ''}`, 'term-fail']])
-      : status === 'PARTIAL'
-        ? termLine([[`RESULT: PARTIAL (${passes}/${report.checks.length} checks; ${report.checks.filter((c) => c.status === 'skip').length} skipped)`, 'term-dim']])
-        : termLine([[`RESULT: PASS (${passes}/${report.checks.length} checks)`, 'term-pass']]),
-  );
-
+  const lines = parts.map((line) => termLine(line));
+  const run = ++terminalRun;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let i = 0;
   const step = () => {
-    if (i >= lines.length) return;
+    if (run !== terminalRun || i >= lines.length) return;
     out.append(lines[i++]);
     out.scrollTop = out.scrollHeight;
     if (i < lines.length) setTimeout(step, reduced ? 0 : 55);
@@ -291,21 +277,30 @@ function renderTerminal(bundle) {
 
 /* ── bid ────────────────────────────────────────────────────────────────── */
 
+// ZIP-321: the memo is base64url with `=` padding omitted; wallets must reject
+// `+`, `/` and `=`. The proof-memo box keeps standard base64 (it is not a URI).
 function paymentUri(auction, memoText) {
   const memo = new TextEncoder().encode(memoText);
+  const b64url = bytesToB64(memo).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const params = new URLSearchParams();
-  params.set('memo', bytesToB64(memo));
+  params.set('memo', b64url);
   return `zcash:${auction.address}?${params.toString()}`;
+}
+
+function refundPlaceholder(address) {
+  const prefix = address.startsWith('utest1') ? 'utest1' : address.startsWith('uregtest1') ? 'uregtest1' : 'u1';
+  return `${prefix}<your fresh shielded address>`;
 }
 
 function renderBid(bundle) {
   const { auction, settlement, chain } = bundle;
   const spec = auction.spec ?? auction.v ?? 1;
 
+  const refund = refundPlaceholder(auction.address);
   state.memoText =
     spec === 2
-      ? JSON.stringify({ v: 2, refund: 'u1<your fresh shielded address>', qty: '1' })
-      : JSON.stringify({ v: 1, refund: 'u1<your fresh shielded address>' });
+      ? JSON.stringify({ v: 2, refund, qty: '1' })
+      : JSON.stringify({ v: 1, refund });
   state.paymentUri = paymentUri(auction, state.memoText);
 
   $('[data-address]').textContent = auction.address;
@@ -640,8 +635,14 @@ function renderReport(report, meta) {
       ? 'audit mode has no chain view: C5–C10, C12, C13 skip. PARTIAL is the honest verdict; fixture mode runs them all.'
       : 'fixture mode replays the recorded chain view, so C1–C13 run on the server. C14 needs the auditor OVK and skips for a public reader.';
 
-  if (report.mode !== 'audit') {
-    $('[data-terminal-time]').textContent = `loaded ${new Date().toISOString().slice(11, 19)}Z`;
+  if (meta.auction) {
+    renderTerminal({
+      slug: meta.auction.slug,
+      kind: meta.auction.kind,
+      auction_id: meta.auction.auction_id,
+      entries: meta.auction.entries,
+      report,
+    });
   }
 }
 
@@ -654,7 +655,7 @@ async function runVerifier(slug) {
       `/api/auction/${encodeURIComponent(slug)}/report?mode=${encodeURIComponent(mode)}`,
     );
     const meta = state.auctions.find((a) => a.slug === slug);
-    renderReport(report, { label: meta ? artifactLabel(meta) : slug });
+    renderReport(report, { label: meta ? artifactLabel(meta) : slug, auction: meta });
   } catch (err) {
     $('[data-verdict]').dataset.state = 'fail';
     $('[data-verdict-mark]').textContent = 'ERR';
@@ -871,9 +872,13 @@ function wireOnce() {
 /* ── boot ───────────────────────────────────────────────────────────────── */
 
 async function boot() {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   armReveals();
   initScrollChrome();
   wireOnce();
+  mountHeroArt($('[data-hero-art]'), { reduced });
+  // The h1 is static; section headings wait until render, because one of them is filled in.
+  armFocusReveal($$('[data-focus]'), { reduced });
 
   const params = new URLSearchParams(location.search);
   const requested = params.get('a');
@@ -914,6 +919,7 @@ async function boot() {
   renderReport(bundle.report, { label: artifactLabel(state.auctions.find((a) => a.slug === bundle.slug)) });
   renderProofPanel(bundle);
   renderQuantum(bundle.quantum);
+  armFocusReveal($$('.section-head h2'), { reduced });
 }
 
 boot();

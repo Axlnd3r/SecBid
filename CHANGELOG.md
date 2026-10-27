@@ -31,8 +31,27 @@ unchanged.
   refreshed `docs/ADAPTER.md` and `docs/WEB.md`, and the open wallet questions with fail-closed
   behavior.
 
+- **Testnet readiness.** Address checks recognise testnet/regtest prefixes (`utest1`,
+  `ztestsapling1`, `uviewtest1`); a refund address on another network than the auction is
+  `stranded: refund_wrong_network`; ZIP-321 memos are base64url without padding, as the ZIP
+  requires. Setup runbook in `docs/TESTNET-SETUP.md`. Tested against fake Zallet.
+
+- **Web fixes from a browser pass.** Re-running the verifier on another artifact set now repaints
+  the terminal panel too: picking a tampered set used to leave the honest set's `RESULT: PASS`
+  above a FAIL verdict. Transcript builder moved to `web/assets/transcript.js` (tested from Node).
+  The hero auction-id badge no longer overflows the gutter at phone width.
+
+- **Hero and motion, closer to the references.** The hero art is now a dithered scene generated in
+  the browser (`web/assets/hero-art.js`): the X is an auction gavel crossed with a bolt of light,
+  developed once on load, then still. Hovering it reads the mark through scan lines with a lens that
+  bends the rows around the cursor (after xmcp.dev's footer mark); the frame loop runs only while
+  the pointer moves. Fixed the hammer head being clipped at the top of the canvas. Headings get a word-by-word focus reveal with a travelling
+  camera frame (`web/assets/focus.js`, after scrolltide's description). xmcp-style label + squared
+  chip badge (`auction … [TESTNET · SETTLED]`) and square buttons. Nothing loops any more (the badge
+  pulse is gone); reduced motion shows everything at once.
+
 ## Verification
 
-`npm test` regenerates fixtures and runs the full suite (102 tests at the time of writing). Typecheck
+`npm test` regenerates fixtures and runs the full suite (111 tests at the time of writing). Typecheck
 is optional because the runtime uses Node type stripping. A real testnet run is still pending; see
 `docs/TESTNET.md`.
