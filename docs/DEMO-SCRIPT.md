@@ -146,6 +146,26 @@ and the repo URL.
 | Did my bid count? | you trust them | **inclusion proof in your refund memo** |
 | Operator runs off? | escrow, or nothing | **bond + auditable custody** |
 
+## 2-minute cut (`film.html?cut=2`, 1:57)
+
+The submission form asks for two minutes. The cut keeps parts of every scene (some sped up, never the
+terminal output itself) and uses one shorter line per scene; captions follow these lines. Read at an
+easy pace, about 100 words a minute:
+
+| # | line |
+|---|---|
+| 0 | Secbid: sealed-bid auctions on Zcash, where the bid is a shielded payment. |
+| 1 | A sealed bid only works if your competitors can’t see your number. On a transparent chain, every bid is visible. |
+| 2 | OTC block sales. Procurement tenders. Token sales. Grant allocation. In Secbid the bid is one shielded Zcash payment — no app, no contract, no reveal. |
+| 2b | Open, bid, settle — and anyone can verify. |
+| 3 | This is a real testnet bid. The chain shows no sender, no amount, no memo. |
+| 4 | Not the public, not other bidders — not even the auctioneer learns who you are. The auctioneer is the one who can’t hide, so they can be held to account. |
+| 5 | At the deadline a deterministic rule clears the auction: one price for every winner, and refunds in one shielded transaction. |
+| 6 | Every refund carries an inclusion proof. Flip one byte and it fails. |
+| 7 | Anyone can replay the auction from chain data: fourteen checks pass on testnet. Drop one bid, and the verifier names the check that fails. |
+| 8 | Custody is auditable, not trustless, and all six bids sit in the quantum-recoverable Ironwood pool. |
+| 9 | No contract, chip or key holder to trust. Check it yourself. |
+
 ## Playing the film
 
 The whole storyboard above is built as a browser animation: `npm run web`, then open
@@ -166,7 +186,7 @@ without them.
 | `C` | captions on/off (burned-in narration) |
 | `H` | timer overlay |
 
-Record: F11 fullscreen, `Win+Alt+R` to start/stop (Xbox Game Bar), then add the voice-over in
+Record: open `film.html?cut=2` for the two-minute version (plain `film.html` is the 3:00 cut). F11 fullscreen, `Win+Alt+R` to start/stop (Xbox Game Bar), then add the voice-over in
 Clipchamp. `?t=<seconds>` opens at a given time for retakes.
 
 ## Recording checklist

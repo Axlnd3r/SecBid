@@ -64,6 +64,8 @@ unchanged.
   plaza tracking boxes follow the people in each video frame; the close folds three trust spheres
   (contract, TEE, FHE) into one. 3:00. The web server now answers
   single byte-range requests (206/416) and serves `.mp4`, so the film can seek in video.
+- **2-minute cut.** `film.html?cut=2` (1:57): every scene keeps parts of its own timeline, some sped
+  up, with one shorter narration line per scene; the full 3:00 film is unchanged.
 - **Static deploy.** `npm run build:static` renders every public API answer from the real server into
   `site/` (relative paths, `.nojekyll`) for GitHub Pages; `web/assets/static-api.js` maps API paths
   onto those files only when the page is marked static. Tested in `tests/static.test.ts`.
