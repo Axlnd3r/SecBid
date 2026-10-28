@@ -12,10 +12,68 @@
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/app.css">
 <link rel="stylesheet" href="assets/explainer.css">
+<link rel="stylesheet" href="assets/intro.css">
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
 <div class="scroll-progress" aria-hidden="true"><span data-progress></span></div>
+
+<!-- ── intro ───────────────────────────────────────────────────────────── -->
+<section class="intro" data-intro data-beat="0" aria-label="Secbid introduction">
+  <div class="intro-stage">
+    <div class="intro-media" aria-hidden="true">
+      <img src="assets/intro/hall.jpg" alt="">
+      <video src="assets/intro/hall.mp4" poster="assets/intro/hall.jpg" muted playsinline preload="auto"></video>
+    </div>
+    <div class="intro-shade" aria-hidden="true"></div>
+    <div class="intro-grain" aria-hidden="true"></div>
+
+    <div class="intro-top">
+      <div class="intro-meta">[ Zcash testnet ]<br>auction c91d6118 · 2026-10-28<br>PASS 14/14</div>
+      <nav aria-label="Intro">
+        <a href="#explain" data-enter="go">What is it</a>
+        <a href="sandbox.html">Try it</a>
+        <a href="https://github.com/Axlnd3r/SecBid">Code</a>
+        <a class="intro-skip" href="#explain" data-enter="skip">↳ Skip intro</a>
+      </nav>
+    </div>
+
+    <div class="intro-title">
+      <p>Zecathon 2026 · Private Markets</p>
+      <h1>Secbid</h1>
+      <span>Sealed-bid auctions on Zcash, where the bid is a shielded payment.</span>
+    </div>
+
+    <div class="intro-beats">
+      <div class="intro-beat" data-b="1">
+        <small>01 · The problem</small>
+        <b>Every auction room<br><em>knows who raised a hand.</em></b>
+        <p>On a platform, the operator sees every bidder and every bid. On a public blockchain, everyone does. Whales get front-run, and losers get profiled.</p>
+      </div>
+      <div class="intro-beat" data-b="2">
+        <small>02 · The idea</small>
+        <b>Here, a bid is<br><em>a shielded payment.</em></b>
+        <p>You send ZEC to the auction's shielded address. On chain there is no sender and no amount, just a sealed note. Losers are refunded in one batch.</p>
+      </div>
+      <div class="intro-beat" data-b="3">
+        <small>03 · The guarantee</small>
+        <b>Price is public.<br><em>Bidders are not.</em></b>
+        <p>Not even the auctioneer learns who bid. Yet anyone can rescan the chain and recompute the result: 14 checks. Each bidder gets proof that their bid counted.</p>
+      </div>
+      <div class="intro-beat" data-b="4">
+        <small>04 · Proven on Zcash testnet</small>
+        <b>Six sealed bids.<br><em>One price. Zero names.</em></b>
+        <a class="intro-enter" href="#explain" data-enter="go">↳ Enter the auction</a>
+      </div>
+    </div>
+
+    <div class="intro-bottom">
+      <span>© 2026 Secbid</span>
+      <span class="intro-scroll"><i></i>Scroll down</span>
+    </div>
+    <div class="intro-progress" aria-hidden="true"><i></i></div>
+  </div>
+</section>
 
 <header class="nav" id="top">
   <div class="nav-inner">
@@ -674,5 +732,6 @@
 
 <script type="module" src="assets/app.js"></script>
 <script type="module" src="assets/explainer.js"></script>
+<script type="module" src="assets/intro.js"></script>
 </body>
 </html>
