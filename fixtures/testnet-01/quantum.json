@@ -1,0 +1,42 @@
+{
+  "spec": 2,
+  "auction_id": "c91d611828ac595f556528459b0e5869",
+  "disclaimer": "Quantum-recoverable ≠ post-quantum. Privacy of revealed data is not protected against a future discrete-log-breaking adversary.",
+  "pool": {
+    "auction": "ironwood",
+    "warning": null
+  },
+  "notes": {
+    "observed": true,
+    "total": 6,
+    "by_pool": {
+      "ironwood": 6,
+      "orchard": 0,
+      "sapling": 0
+    },
+    "recoverable": 6
+  },
+  "published": [
+    {
+      "kind": "auction_address",
+      "value": "utest1ywd7yunf7g4nvza6q64saxynu9qwhzpq4g5kmk4f45ay93vnex4khr8dtsztwnk8cevkg7h593fkxr0z6sajdge5pw229wthvuazjwx7",
+      "note": "public for the lifetime of the auction; do not reuse it for anything else"
+    },
+    {
+      "kind": "revealed_ufvk",
+      "value": "uviewtest19a0vcghrthfqq43e2p9jwe30ewg3z6rs2rvkuskprzwpzkusu7vk8s5jyqjcepy8l7haal9dxxy24fphflsmlwphv58k6zvp89ftf73cs7m8k08jaatsp79quslyh4dsnpl0d68g54pdpu5g6y7jx55tgzmefxfnwyj4anvvfd40kfx8vs85nsu2zp5zhn6mswjuxzkhwdde8cwhpvr549lstccuuhkclt4mpn40n8sxtwcy9rrgllgqy5tg6jpdtvvglkdkz24eu9n40ggl7s7ek4jjs8km4cxvyfeqnywg9qt5ujxtan9mehuj9ytau6wvgmplneu77xhgd4yh3e2sg48l7jjy386gjp5cqs6248zdjz3nqvdya23wzrxagcexseh847thk460yjdrelumsujl36rshshsdrdlwmku60ea9tqpkmgsm6xtjewhelg2g2jxhkd7yfk8e7xvmr82mcumg4rshztgrsmmyalx003g5cjhgfrf",
+      "note": "reveals every received note and memo this account ever held"
+    }
+  ],
+  "refund_reuse": {
+    "duplicated_in_auction": 0,
+    "reused_across_auctions": 0,
+    "entries": []
+  },
+  "exposed": [
+    "The auction account holds spending keys in one place: custody is auditable, not trustless.",
+    "6 note(s) are in the quantum-recoverable pool: recovery is possible, confidentiality is not post-quantum.",
+    "The published UFVK is long-lived and cannot be unpublished.",
+    "No refund address was reused within this auction."
+  ]
+}

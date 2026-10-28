@@ -106,6 +106,24 @@ test('scan refuses a transaction with no Orchard commitment instead of inventing
   }
 });
 
+test('on testnet an Orchard-receiver account is an Ironwood account (NU6.3 active)', async () => {
+  const ironwood = zalletPoolSupport('ironwood', 'test');
+  assert.equal(ironwood.supported, true);
+  assert.equal(zalletPoolSupport('ironwood', 'main').supported, false);
+  assert.equal(zalletPoolSupport('ironwood', 'regtest').supported, false);
+
+  const fake = await startFakeZallet({ notes: [] });
+  try {
+    const rpc = new JsonRpcClient({ url: fake.url });
+    const created = await createAuctionAccount(rpc, 'auction-ironwood', 'ironwood', 'test');
+    assert.equal(created.pool, 'ironwood');
+    assert.match(created.address, /^u/);
+    await assert.rejects(() => createAuctionAccount(rpc, 'auction-iw-main', 'ironwood', 'main'), /Ironwood/);
+  } finally {
+    await fake.close();
+  }
+});
+
 test('the wallet reports Orchard support and refuses to guess Ironwood', async () => {
   assert.equal(zalletPoolSupport('orchard').supported, true);
   const ironwood = zalletPoolSupport('ironwood');

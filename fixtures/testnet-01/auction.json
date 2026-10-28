@@ -1,0 +1,18 @@
+{
+  "spec": 2,
+  "auction_id": "c91d611828ac595f556528459b0e5869",
+  "network": "test",
+  "address": "utest1ywd7yunf7g4nvza6q64saxynu9qwhzpq4g5kmk4f45ay93vnex4khr8dtsztwnk8cevkg7h593fkxr0z6sajdge5pw229wthvuazjwx7",
+  "pool": "ironwood",
+  "rule": "uniform",
+  "units": "3",
+  "reserve_zat": "10000000",
+  "min_bid_zat": "5000000",
+  "deadline_height": 4549558,
+  "confirmations": 3,
+  "mode": "public-tender",
+  "ovk_commitment": "363004c5d7cf54590054a1e99c29a2a2ce395e5c657833e85981d07745689306",
+  "bond": null,
+  "opened_at_height": 4549544,
+  "params_hash": "bc52b52bb353f51e4049d467ba1cd505457a76143f3d333fc4352c5825db8ae3"
+}

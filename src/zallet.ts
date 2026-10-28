@@ -1,4 +1,4 @@
-import type { NotePool, Pool, ReceivedNote, RefundTx } from './model.ts';
+import type { AuctionParams, NotePool, Pool, ReceivedNote, RefundTx } from './model.ts';
 import type { ChainAdapter, PoolSupport, RefundOutput } from './adapter.ts';
 import { isShieldedAddress, isUnifiedAddress, isUnifiedViewingKey } from './memo.ts';
 import { sortLeavesOrder } from './merkle.ts';
@@ -128,16 +128,20 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promis
 }
 
 /**
- * Wallet pool capability. Ironwood support is unconfirmed for the Zallet release
- * this adapter targets (OPEN-QUESTIONS.md). Reporting it as supported would
- * be a guess, and `--pool auto` would then record the wrong pool.
+ * Wallet pool capability. Ironwood has no receiver of its own: once NU6.3 is
+ * active, payments to an Orchard receiver are accounted to the Ironwood pool
+ * (Zallet CHANGELOG and `payments.rs`, PR #898 build). That is confirmed only
+ * on testnet, where a faucet payment to an Orchard receiver landed in Ironwood
+ * on 2026-10-28. Elsewhere it stays unconfirmed, because claiming it would make
+ * `--pool auto` record a pool the notes may not arrive in.
  */
-export function zalletPoolSupport(pool: Pool): PoolSupport {
+export function zalletPoolSupport(pool: Pool, network?: AuctionParams['network']): PoolSupport {
   if (pool === 'orchard') return { supported: true };
+  if (network === 'test') return { supported: true };
   return {
     supported: false,
     reason:
-      'Ironwood account creation is not confirmed for this Zallet release ' +
+      'Ironwood account creation is confirmed only on testnet (NU6.3 active) ' +
       '(OPEN-QUESTIONS.md); staying in Orchard',
   };
 }
@@ -161,14 +165,15 @@ export async function createAuctionAccount(
   rpc: JsonRpcClient,
   name: string,
   pool: Pool = 'orchard',
+  network?: AuctionParams['network'],
 ): Promise<ZalletAccount> {
   if (typeof name !== 'string' || name.trim() === '') {
     throw new Error('zallet: account name is required');
   }
-  if (pool !== 'orchard') {
-    // Do not guess the Ironwood RPC shape. OPEN-QUESTIONS.md asks Zallet for it.
+  if (!zalletPoolSupport(pool, network).supported) {
+    // Ironwood uses the Orchard receiver; that is only confirmed where NU6.3 is active.
     throw new Error(
-      'zallet: creating an Ironwood account is not confirmed on this Zallet release; ' +
+      'zallet: creating an Ironwood account is confirmed only on testnet; ' +
         'see OPEN-QUESTIONS.md. Use --pool orchard (or auto, which falls back).',
     );
   }

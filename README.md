@@ -7,9 +7,10 @@ Price is public. Bidders are not. And an auctioneer who cheats gets caught — f
 > **Status.** Spec v2 runs end to end against a fake Zallet that reproduces its JSON-RPC response
 > structs: open, bid URI, uniform/first-price settle, batched refunds, inclusion-proof memos, bond
 > recheck, private-mode auditor transcript, 14 verifier checks, quantum report, bidder agent, public
-> auction page. `npm test` is green. **No testnet auction has been run yet:** every live-path
-> result is *tested against fake Zallet*, and [`docs/TESTNET.md`](docs/TESTNET.md) tracks that gap
-> rather than claiming txids we do not have.
+> auction page. `npm test` is green. **Run on Zcash testnet on 2026-10-28:** a uniform 3-unit
+> auction in the Ironwood pool, 6 bids (incl. dust and late), one refund transaction, `verify` PASS
+> 14/14 — artifacts in `fixtures/testnet-01/`, txids in [`docs/TESTNET.md`](docs/TESTNET.md). Bond,
+> private mode and multi-transaction refunds are still *tested against fake Zallet*.
 > Spec: [`BLUEPRINT.md`](BLUEPRINT.md) (v2; v1 design in [`docs/BLUEPRINT.md`](docs/BLUEPRINT.md))
 > · Risks: [`docs/THREAT-MODEL.md`](docs/THREAT-MODEL.md)
 > · Wallet limits: [`docs/ADAPTER.md`](docs/ADAPTER.md) · Agent instructions: [`CLAUDE.md`](CLAUDE.md)
@@ -125,7 +126,7 @@ cat > mandate.json <<'EOF'
 EOF
 node src/cli.ts agent bid fixtures/auction-02 --mandate mandate.json
 
-# live path (testnet); all of this is tested against fake Zallet, not testnet yet
+# live path (testnet): open/scan/settle ran on testnet (docs/TESTNET.md); bond is tested against fake Zallet
 export SECBID_RPC_PASSWORD='…'
 node src/cli.ts open   --rpc http://127.0.0.1:8232 --rpc-user secbid --name a1 \
   --pool auto --rule uniform --units 3 --reserve 0.1 --deadline <height> \
@@ -151,7 +152,7 @@ CLAUDE.md               rules for coding agents
 docs/BLUEPRINT.md       v1 design record + v2 implementation map
 docs/THREAT-MODEL.md    adversaries, leaks, residual risks
 docs/ADAPTER.md         Zallet JSON-RPC surface and limits
-docs/TESTNET.md         testnet status: not run yet (honest gap)
+docs/TESTNET.md         testnet run log: versions, txids, what was not covered
 CHANGELOG.md            what changed, phase by phase
 src/  scripts/  tests/  fixtures/  web/
 ```

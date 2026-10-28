@@ -232,9 +232,10 @@ Each task: files · acceptance. Tick when `npm test` is green.
 - [x] **F2** `secbid agent check <dir> <memo>` → wraps `proof check`. No network, no LLM in core path.
 
 ### Phase G — testnet (highest priority for judging; do as soon as A–B pass)
-- [ ] **G1** Run Zebra + Zallet on testnet; record versions in `docs/TESTNET.md`.
+- [x] **G1** Run Zebra + Zallet on testnet; record versions in `docs/TESTNET.md`.
 - [ ] **G2** Open a uniform 3-unit auction, ≥ 5 bids from at least 2 different wallet apps, settle, reveal.
-- [ ] **G3** Commit artifacts to `fixtures/testnet-01/`; `verify` → PASS; paste transcript + txids into `docs/TESTNET.md`.
+      *Partial (2026-10-28): 6 bids, settled, revealed — but all from Zallet accounts, one app.*
+- [x] **G3** Commit artifacts to `fixtures/testnet-01/`; `verify` → PASS; paste transcript + txids into `docs/TESTNET.md`.
 - [ ] **G4** Record the 3-minute demo video (§10).
 
 > **G is not done.** No testnet node or funded wallet was available in this workspace. Every live-path

@@ -518,10 +518,14 @@ async function runOpen(argv: string[]): Promise<number> {
         console.error(`deadline ${opts.deadline} must be after the current height ${openedAt}`);
         return 2;
       }
-      const choice = await choosePool({ supportsPool: zalletPoolSupport }, opts.pool ?? 'orchard');
+      const network = opts.network ?? 'test';
+      const choice = await choosePool(
+        { supportsPool: (p: Pool) => zalletPoolSupport(p, network) },
+        opts.pool ?? 'orchard',
+      );
       pool = choice.pool;
       poolWarning = choice.warning;
-      const created = await createAuctionAccount(rpc, opts.name!, pool);
+      const created = await createAuctionAccount(rpc, opts.name!, pool, network);
       address = created.address;
       account = {
         account_uuid: created.account_uuid,

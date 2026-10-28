@@ -9,6 +9,12 @@ never a pass.
 - [ ] Does the current Zallet release support creating an account in the Ironwood (quantum-recoverable)
       pool on testnet? Which RPC method/param? Until answered, `--pool auto` falls back to `orchard`
       and writes `pool_warning`; `--pool ironwood` fails with the adapter's reason.
+      Partial answer (2026-10-28): there is no Ironwood receiver or RPC param. Once NU6.3 is active,
+      payments to an Orchard receiver are accounted to the Ironwood pool (Zallet CHANGELOG,
+      `payments.rs`, `book/src/rpc/methods.md`, PR #898 build). Observed on testnet: a faucet payment
+      to an Orchard receiver at height 4,549,504 shows as `ironwood` in `z_getbalanceforaccount`.
+      The adapter now reports Ironwood as supported for `--network test` only; main/regtest still
+      fall back. Mainnet NU6.3 activation is unchecked.
 - [ ] Does Zallet expose OVK for an account directly, or must it be derived from the UFVK?
       Until answered, `open` requires `--ovk <64 hex>` and `scan`/`settle` check it against the
       committed hash. The CLI never derives or invents an OVK.

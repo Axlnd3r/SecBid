@@ -80,6 +80,7 @@ describe('web api', () => {
       [
         'auction-01',
         'auction-02',
+        'testnet-01',
         't1-price',
         't2-truncate',
         't3-refund',

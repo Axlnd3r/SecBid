@@ -1,0 +1,13 @@
+{
+  "spec": 2,
+  "auction_id": "c91d611828ac595f556528459b0e5869",
+  "txs": [
+    {
+      "txid": "7803d3fcd33325102279420f6382d364f10c485409b4d5a5d41c88188cf1a677",
+      "height": 4549569,
+      "output_count": 5
+    }
+  ],
+  "output_count": 5,
+  "outputs_hash": "02f5ee5b89011101438277c5fd63eb91ee4a1fdc0b996ea6b87a325f2d25352c"
+}

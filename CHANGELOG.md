@@ -49,6 +49,13 @@ unchanged.
   camera frame (`web/assets/focus.js`, after scrolltide's description). xmcp-style label + squared
   chip badge (`auction … [TESTNET · SETTLED]`) and square buttons. Nothing loops any more (the badge
   pulse is gone); reduced motion shows everything at once.
+- **Ironwood on testnet.** `--pool ironwood|auto` with `--network test` now opens an Ironwood
+  auction: under NU6.3 an Orchard receiver's payments land in the Ironwood pool, so the account
+  uses the same Orchard-only address. Found during the testnet run, where the old Orchard default
+  would have failed C12. Main/regtest still fall back to Orchard (OPEN-QUESTIONS Q1).
+- **First testnet run (G1, G3; G2 partial).** `fixtures/testnet-01/`: uniform 3-unit Ironwood
+  auction, 6 bids, clearing price 0.11 TAZ, one refund tx, PASS 14/14. Log in `docs/TESTNET.md`.
+- **Demo script.** `docs/DEMO-SCRIPT.md`: 2:50 narration with honest testnet/demo labelling.
 
 ## Verification
 
