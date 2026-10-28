@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secbid Demo Film</title>
+<!--
+  Secbid demo film: a 2:50 motion piece played in the browser and screen-recorded.
+  Space play/pause · ←/→ ±5 s · 1–9 jump to scene · R restart · C captions · H hud.
+  ?t=<seconds> seeks, &pause freezes (used for review screenshots).
+  Every terminal line is real output from fixtures/testnet-01 and fixtures/tamper (docs/TESTNET.md).
+  All imagery is generated here: no photos, no frames from the reference videos.
+-->
+<link rel="stylesheet" href="/assets/film.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="cv" width="1920" height="1080"></canvas>
+  <div id="layer"></div>
+  <canvas id="grain" width="480" height="270"></canvas>
+  <div id="vignette"></div>
+  <div id="rail"></div>
+  <div id="cap"></div>
+  <div id="start"><div><b>Secbid</b>
+    <kbd>Space</kbd> play / pause &nbsp; <kbd>F11</kbd> fullscreen &nbsp; <kbd>C</kbd> captions &nbsp; <kbd>H</kbd> timer<br>
+    <kbd>1</kbd>–<kbd>9</kbd> jump to scene &nbsp; <kbd>←</kbd> <kbd>→</kbd> ±5 s &nbsp; <kbd>R</kbd> restart</div></div>
+</div>
+<div id="hud" class="off"></div>
+<script src="/assets/film.js"></script>
+</body>
+</html>

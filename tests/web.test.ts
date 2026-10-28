@@ -71,6 +71,20 @@ describe('web api', () => {
     assert.equal(traversal.status, 404);
   });
 
+  it('serves byte ranges of static files, so the film can seek in video', async () => {
+    const whole = await (await fetch(`${base}/assets/film.css`)).text();
+    const part = await fetch(`${base}/assets/film.css`, { headers: { range: 'bytes=10-29' } });
+    assert.equal(part.status, 206);
+    assert.equal(part.headers.get('accept-ranges'), 'bytes');
+    assert.equal(part.headers.get('content-range'), `bytes 10-29/${Buffer.byteLength(whole)}`);
+    assert.equal(await part.text(), Buffer.from(whole).subarray(10, 30).toString());
+    const tail = await fetch(`${base}/assets/film.css`, { headers: { range: 'bytes=-5' } });
+    assert.equal(tail.status, 206);
+    assert.equal(await tail.text(), Buffer.from(whole).subarray(-5).toString());
+    const bad = await fetch(`${base}/assets/film.css`, { headers: { range: 'bytes=999999-' } });
+    assert.equal(bad.status, 416);
+  });
+
   it('indexes every fixture auction, honest first', async () => {
     const { auctions } = (await (await fetch(`${base}/api/auctions`)).json()) as {
       auctions: Array<{ slug: string; kind: string; has_bond: boolean; rule: string }>;

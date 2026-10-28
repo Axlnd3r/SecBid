@@ -1,2 +1,5 @@
 node_modules/
 package-lock.json
+
+# demo film media (generated stills and clips, ~98 MB); the film falls back to drawn art without them
+web/assets/film/

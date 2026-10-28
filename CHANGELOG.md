@@ -56,6 +56,14 @@ unchanged.
 - **First testnet run (G1, G3; G2 partial).** `fixtures/testnet-01/`: uniform 3-unit Ironwood
   auction, 6 bids, clearing price 0.11 TAZ, one refund tx, PASS 14/14. Log in `docs/TESTNET.md`.
 - **Demo script.** `docs/DEMO-SCRIPT.md`: 2:50 narration with honest testnet/demo labelling.
+- **Demo film.** `web/film.html` (+ `assets/film.{css,js}`): the storyboard as a seekable 1080p
+  browser animation — halftone crowds, dissolving faces, CCTV tracking boxes, typed terminal scenes
+  with real testnet output. No libraries; served under the existing CSP. Opens on a title card,
+  explains open → bid → settle → verify in one scene, then keeps a chapter rail on screen. Three
+  generated archival-style stills and clips (`web/assets/film/`, Higgsfield) with a drawn fallback;
+  plaza tracking boxes follow the people in each video frame; the close folds three trust spheres
+  (contract, TEE, FHE) into one. 3:00. The web server now answers
+  single byte-range requests (206/416) and serves `.mp4`, so the film can seek in video.
 
 ## Verification
 

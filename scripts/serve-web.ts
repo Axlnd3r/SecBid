@@ -252,6 +252,7 @@ const MIME: Record<string, string> = {
   '.woff2': 'font/woff2',
   '.ico': 'image/x-icon',
   '.png': 'image/png',
+  '.mp4': 'video/mp4',
   '.txt': 'text/plain; charset=utf-8',
 };
 
@@ -349,11 +350,33 @@ export function createWebServer(options: WebServerOptions = {}): Server {
 
     const type = MIME[extname(filePath).toLowerCase()] ?? 'application/octet-stream';
     const body = readFileSync(filePath);
+    const cache = type.startsWith('text/html') ? 'no-store' : 'public, max-age=60';
+    // Single byte ranges, so a <video> can seek (the demo film). Multi-range is not needed.
+    const range = /^bytes=(\d*)-(\d*)$/.exec(String(req.headers.range ?? ''));
+    if (range && (range[1] || range[2])) {
+      const size = body.length;
+      const start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2]));
+      const end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+      if (start >= size || start > end) {
+        res.writeHead(416, { ...SECURITY_HEADERS, 'content-range': `bytes */${size}` });
+        return res.end();
+      }
+      res.writeHead(206, {
+        ...SECURITY_HEADERS,
+        'content-type': type,
+        'content-length': end - start + 1,
+        'content-range': `bytes ${start}-${end}/${size}`,
+        'accept-ranges': 'bytes',
+        'cache-control': cache,
+      });
+      return res.end(req.method === 'HEAD' ? undefined : body.subarray(start, end + 1));
+    }
     res.writeHead(200, {
       ...SECURITY_HEADERS,
       'content-type': type,
       'content-length': body.length,
-      'cache-control': type.startsWith('text/html') ? 'no-store' : 'public, max-age=60',
+      'accept-ranges': 'bytes',
+      'cache-control': cache,
     });
     res.end(req.method === 'HEAD' ? undefined : body);
   });
