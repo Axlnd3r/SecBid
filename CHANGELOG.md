@@ -5,7 +5,7 @@ unchanged.
 
 ## Unreleased
 
-- Landing page: cinematic scroll intro (auction-hall clip, three beats, skippable; the clip itself is not in the repo).
+- Landing page: cinematic scroll intro (auction-hall clip scrubbed by scroll, both directions; three beats, skippable; the clip itself is not in the repo).
 - Landing page: "What is Secbid" explainer — the testnet-01 run in four scenes, three lenses (public, auctioneer, bidder), a who-knows-what table and the evidence (PASS 14/14 on testnet, sandbox, txids).
 
 ## v2 — implementation
