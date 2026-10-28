@@ -72,7 +72,7 @@ function scramble(text, x, seed) {
 /* highlighter sweep */
 const sweep = (e, x) => {
   e.style.backgroundSize = `${eio(clamp(x)) * 100}% 72%`;
-  e.classList.toggle('on', x > 0.35); // on dark scenes the text flips to ink once the marker covers it
+  e.classList.toggle('on', x > 0.92); // on dark scenes the text flips to ink once the marker covers it
 };
 
 /* odometer (ref 3 slot-roll numbers) */
@@ -532,7 +532,8 @@ function clip(name) {
 }
 function syncClip(v, t, rate = 1) {
   const want = Math.max(0, Math.min(t * rate, v.duration - 0.05));
-  if (v.playbackRate !== rate) v.playbackRate = rate;
+  const r = Math.min(4, rate * curSpeed); // a sped-up segment of the 2-minute cut plays its clip faster too
+  if (v.playbackRate !== r) v.playbackRate = r;
   if (playing && t * rate < v.duration - 0.05) {
     if (v.paused) v.play().catch(() => {});
     if (Math.abs(v.currentTime - want) > 0.3) v.currentTime = want;
@@ -1284,17 +1285,65 @@ const SCENES = [
     },
   },
 ];
-const TOTAL = SCENES[SCENES.length - 1].start + SCENES[SCENES.length - 1].dur;
+/* ---------- the 2-minute cut (film.html?cut=2) ----------
+   Each scene keeps parts of its own timeline, [from, to, speed] in scene seconds, and gets a
+   shorter line so the captions are never rushed. Without ?cut=2 the full 3:00 film plays. */
+const CUT2 = {
+  'title': { keep: [[0, 5]], say: 'Secbid: sealed-bid auctions on Zcash, where the bid is a shielded payment.' },
+  'sealed bids': { keep: [[0.3, 9.4], [14.5, 19.6]], say: 'A sealed bid only works if your competitors can’t see your number. On a transparent chain, every bid is visible.' },
+  'who uses it': {
+    keep: [[0, 13.95, 1.4], [14, 18.6]],
+    say: 'OTC block sales. Procurement tenders. Token sales. Grant allocation. In Secbid the bid is one shielded Zcash payment — no app, no contract, no reveal.',
+    capsAt: [[0, 2.5], [2.5, 4.95], [4.95, 7.4], [7.4, 9.96], [9.96, 14.6]],
+  },
+  'how it works': { keep: [[0, 8, 1.3]], say: 'Open, bid, settle — and anyone can verify.' },
+  'observer sees nothing': { keep: [[0.3, 5.8], [9.3, 16]], say: 'This is a real testnet bid. The chain shows no sender, no amount, no memo.' },
+  'even the auctioneer': {
+    keep: [[1, 11.6, 1.6], [12.2, 21, 1.2]],
+    say: 'Not the public, not other bidders — not even the auctioneer learns who you are. The auctioneer is the one who can’t hide, so they can be held to account.',
+  },
+  'settlement': { keep: [[0.4, 17.8, 1.45]], say: 'At the deadline a deterministic rule clears the auction: one price for every winner, and refunds in one shielded transaction.' },
+  'did my bid count': { keep: [[0.3, 12, 1.5]], say: 'Every refund carries an inclusion proof. Flip one byte and it fails.' },
+  'anyone can recompute': {
+    keep: [[0.3, 12, 1.45], [15.5, 22.6, 1.3]],
+    say: 'Anyone can replay the auction from chain data: fourteen checks pass on testnet. Drop one bid, and the verifier names the check that fails.',
+  },
+  'trust + quantum': { keep: [[0.3, 10.5, 1.35]], say: 'Custody is auditable, not trustless, and all six bids sit in the quantum-recoverable Ironwood pool.' },
+  'close': { keep: [[0.2, 10]], say: 'No contract, chip or key holder to trust. Check it yourself.' },
+};
+const CUT = new URLSearchParams(location.search).get('cut') === '2';
 
-/* captions: split each scene's narration into sentences, timed by word count */
-SCENES.forEach((sc) => {
-  const parts = sc.say.split(/(?<=[.!?][”’"]?)\s+/); // sentence ends only before whitespace, so 0.11 stays whole
-  if (sc.capsAt) { sc.caps = parts.map((text, i) => ({ a: sc.capsAt[i][0], b: sc.capsAt[i][1], text })); return; }
-  const total = parts.reduce((n, p) => n + p.trim().split(/\s+/).length, 0);
+/* the timeline actually played: one entry per scene, with its kept segments */
+const PLAN = [];
+{
+  let at = 0;
+  for (const sc of SCENES) {
+    const c = CUT ? CUT2[sc.name] : null;
+    const segs = c ? c.keep.map(([a, b, sp = 1]) => ({ a, b, sp, len: (b - a) / sp })) : [{ a: 0, b: sc.dur, sp: 1, len: sc.dur }];
+    const dur = segs.reduce((n, s) => n + s.len, 0);
+    PLAN.push({ sc, start: at, dur, segs, say: c ? c.say : sc.say, capsAt: c ? c.capsAt : sc.capsAt });
+    at += dur;
+  }
+}
+const TOTAL = PLAN[PLAN.length - 1].start + PLAN[PLAN.length - 1].dur;
+/* plan time u (seconds into this scene's slot) → [the scene's own time, the speed it runs at] */
+function sceneTime(p, u) {
+  for (const s of p.segs) {
+    if (u < s.len || s === p.segs[p.segs.length - 1]) return [s.a + Math.min(u, s.len) * s.sp, s.sp];
+    u -= s.len;
+  }
+  return [0, 1];
+}
+
+/* captions: split each scene's narration into sentences, timed by word count (or pinned by capsAt) */
+PLAN.forEach((p) => {
+  const parts = p.say.split(/(?<=[.!?][”’"]?)\s+/); // sentence ends only before whitespace, so 0.11 stays whole
+  if (p.capsAt) { p.caps = parts.map((text, i) => ({ a: p.capsAt[i][0], b: p.capsAt[i][1], text })); return; }
+  const total = parts.reduce((n, s) => n + s.trim().split(/\s+/).length, 0);
   let acc = 0;
-  sc.caps = parts.map((p) => {
-    const n = p.trim().split(/\s+/).length;
-    const c = { a: (acc / total) * sc.dur, b: ((acc + n) / total) * sc.dur, text: p.trim() };
+  p.caps = parts.map((s) => {
+    const n = s.trim().split(/\s+/).length;
+    const c = { a: (acc / total) * p.dur, b: ((acc + n) / total) * p.dur, text: s.trim() };
     acc += n;
     return c;
   });
@@ -1315,17 +1364,17 @@ function grain(frame) {
 }
 
 /* ---------- player ---------- */
-let now = 0, playing = false, last = 0, active = -1, state = null, gframe = -1;
+let now = 0, playing = false, last = 0, active = -1, state = null, gframe = -1, curSpeed = 1;
 const $cap = document.getElementById('cap'), $hud = document.getElementById('hud'), $start = document.getElementById('start');
 const $rail = document.getElementById('rail');
 $rail.innerHTML = STEPS.map((x, i) => `<span>0${i + 1} ${x}</span>`).join('');
 function sceneAt(t) {
-  for (let i = SCENES.length - 1; i >= 0; i--) if (t >= SCENES[i].start) return i;
+  for (let i = PLAN.length - 1; i >= 0; i--) if (t >= PLAN[i].start) return i;
   return 0;
 }
 function draw() {
   const i = sceneAt(now);
-  const sc = SCENES[i];
+  const p = PLAN[i], sc = p.sc;
   if (i !== active) {
     active = i;
     for (const v of Object.values(CLIPS)) if (!v.paused) v.pause();
@@ -1334,18 +1383,21 @@ function draw() {
     $stage.classList.toggle('dark', sc.dark);
     state = sc.build($layer);
   }
-  const lt = clamp(now - sc.start, 0, sc.dur);
+  const u = clamp(now - p.start, 0, p.dur);
+  const [lt, sp] = sceneTime(p, u);
+  curSpeed = sp;
   sc.update(state, lt);
   const chapter = sc.step != null;
   $rail.classList.toggle('show', chapter);
   [...$rail.children].forEach((c, k) => c.classList.toggle('on', chapter && k === sc.step));
-  const cap = sc.caps.find((c) => lt >= c.a && lt < c.b);
+  const cap = p.caps.find((c) => u >= c.a && u < c.b);
   const html = cap ? `<span>${esc(cap.text)}</span>` : '';
   if ($cap.innerHTML !== html) $cap.innerHTML = html;
   const gf = Math.floor(now * 12);
   if (gf !== gframe) { gframe = gf; grain(gf); }
   const mm = Math.floor(now / 60), ss = (now % 60).toFixed(1).padStart(4, '0');
-  $hud.textContent = `${mm}:${ss} / 2:${String(TOTAL - 120).padStart(2, '0')}  ·  ${i + 1} ${sc.name}${playing ? '' : '  ·  paused'}`;
+  const tm = Math.floor(TOTAL / 60), ts = String(Math.round(TOTAL % 60)).padStart(2, '0');
+  $hud.textContent = `${mm}:${ss} / ${tm}:${ts}${CUT ? ' (2-min cut)' : ''}  ·  ${i + 1} ${sc.name}${playing ? '' : '  ·  paused'}`;
 }
 function tick(ts) {
   if (playing) {
@@ -1367,7 +1419,7 @@ addEventListener('keydown', (e) => {
   if (e.code === 'Space') { e.preventDefault(); playing = !playing; $start.classList.add('off'); }
   else if (e.key === 'ArrowRight') seek(now + 5);
   else if (e.key === 'ArrowLeft') seek(now - 5);
-  else if (/^[1-9]$/.test(e.key) && SCENES[+e.key - 1]) seek(SCENES[+e.key - 1].start);
+  else if (/^[1-9]$/.test(e.key) && PLAN[+e.key - 1]) seek(PLAN[+e.key - 1].start);
   else if (e.key === 'r' || e.key === 'R') { seek(0); playing = false; $start.classList.remove('off'); }
   else if (e.key === 'c' || e.key === 'C') $cap.classList.toggle('off');
   else if (e.key === 'h' || e.key === 'H') $hud.classList.toggle('off');
