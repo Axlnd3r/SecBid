@@ -11,6 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000000'/%3E%3Cpath d='M9 11h14M16 11v13M12 8h8M11 24h10' stroke='%23f5f5f5' stroke-width='2.2' stroke-linecap='square'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/explainer.css">
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
@@ -19,6 +20,7 @@
 <header class="nav" id="top">
   <div class="nav-inner">
     <nav class="nav-links" aria-label="Sections">
+      <a href="#explain">What is it</a>
       <a href="#auction">Auction</a>
       <a href="#result">Result</a>
       <a href="#entries">Entries</a>
@@ -101,7 +103,8 @@
         </figure>
 
         <div class="cta-row reveal" data-reveal>
-          <a class="btn btn-primary" href="#auction">Place a bid</a>
+          <a class="btn btn-primary" href="#explain">What is Secbid? ↓</a>
+          <a class="btn" href="#auction">Place a bid</a>
           <a class="btn" href="#verify">Verify this auction</a>
         </div>
       </div>
@@ -115,6 +118,104 @@
         <li>SHA-256</li>
         <li>WebCrypto</li>
       </ul>
+    </div>
+  </section>
+
+  <!-- ── explain ──────────────────────────────────────────────────────── -->
+  <section class="xp" id="explain" data-explain>
+    <div class="container">
+      <p class="eyebrow">What is Secbid, in one minute</p>
+      <h2>A sealed-bid auction where nobody, not even the auctioneer, knows who bid.</h2>
+      <p class="xp-lede">
+        On a normal platform the operator sees every bidder and every bid. On a public blockchain
+        everybody does. With Secbid <b>a bid is a shielded Zcash payment</b>: the price comes out
+        public and checkable, while the bidders stay private. Below is the real auction we ran on
+        Zcash testnet, scene by scene. Switch the lens to see what each side can know.
+      </p>
+
+      <div class="xp-bar">
+        <div class="xp-seg" role="group" aria-label="Scene">
+          <span>Scene</span>
+          <button type="button" data-scene="1" aria-pressed="true">1 · Open</button>
+          <button type="button" data-scene="2" aria-pressed="false">2 · Bid</button>
+          <button type="button" data-scene="3" aria-pressed="false">3 · Settle</button>
+          <button type="button" data-scene="4" aria-pressed="false">4 · Verify</button>
+          <span class="xp-ctl">
+            <button type="button" data-play>▶ Play</button>
+            <button type="button" data-next aria-label="Next scene">→</button>
+          </span>
+        </div>
+        <div class="xp-seg" role="group" aria-label="Whose view">
+          <span>Seen by</span>
+          <button type="button" data-lens="public" aria-pressed="true">The public</button>
+          <button type="button" data-lens="auctioneer" aria-pressed="false">The auctioneer</button>
+          <button type="button" data-lens="you" aria-pressed="false">Bidder A (you)</button>
+        </div>
+      </div>
+
+      <div class="xp-stage-wrap">
+        <svg class="xp-stage" data-stage role="img" aria-label="Six bidders send sealed shielded payments to one auction address; the auctioneer settles, refunds losers in one batch, and anyone verifies the result."></svg>
+      </div>
+      <p class="xp-caption" data-caption aria-live="polite">
+        <b>1. Open.</b> The seller opens an auction: one shielded Zcash address, a reserve, a rule and a deadline block.
+      </p>
+      <p class="xp-lens-note" data-lens-note></p>
+      <div class="xp-chain" data-chain></div>
+
+      <div class="xp-who">
+        <h3>Who knows what</h3>
+        <table>
+          <thead>
+            <tr><th></th><th>Online auction platform</th><th>Auction on a public chain</th><th class="xp-us">Secbid</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>Who bid</th><td>The platform</td><td>Everyone (addresses are public)</td><td class="xp-us">Nobody, not even the auctioneer</td></tr>
+            <tr><th>How much they bid</th><td>The platform, live</td><td>Everyone, live</td><td class="xp-us">Sealed from the market until the deadline; afterwards auditable, but tied to no one</td></tr>
+            <tr><th>Is the result honest?</th><td>Trust the platform</td><td>Trust the contract code</td><td class="xp-us">Anyone recomputes it from chain data: 14 checks</td></tr>
+            <tr><th>Did my bid count?</th><td>Take their word for it</td><td>Visible to all</td><td class="xp-us">A Merkle proof arrives in your refund memo</td></tr>
+            <tr><th>Losers' money</th><td>Returned by the platform</td><td>Returned by the contract</td><td class="xp-us">Refunded in one batched shielded transaction, checked by the verifier</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="xp-proof">
+        <h3>The proof that it works</h3>
+        <div class="xp-cards">
+          <a class="xp-card" href="?a=testnet-01#verify">
+            <small>Zcash testnet · 2026-10-28</small>
+            <span class="xp-big">PASS 14/14</span>
+            <b>It ran on the real chain</b>
+            <span>6 shielded bids from separate Zallet accounts, price 0.11 TAZ, 5 refunds in 1 transaction. Open the verifier →</span>
+          </a>
+          <a class="xp-card" href="sandbox.html">
+            <small>in your browser · simulated chain</small>
+            <b>Run your own auction</b>
+            <span>Open an auction, place bids, settle and verify. It runs the same clearing, refund and verifier code. →</span>
+          </a>
+          <a class="xp-card" href="sandbox.html">
+            <small>in your browser · simulated chain</small>
+            <b>Try to cheat</b>
+            <span>Lower the price, hide a bid, skip a refund: the verifier fails and names the check that caught it. →</span>
+          </a>
+          <a class="xp-card" href="https://github.com/Axlnd3r/SecBid">
+            <small>open source · no runtime dependencies</small>
+            <b>Read the code</b>
+            <span>Deterministic clearing, Merkle proofs, the 14 checks and the testnet log. →</span>
+          </a>
+        </div>
+        <details class="xp-txids">
+          <summary>The testnet transaction ids</summary>
+          <ul>
+            <li><b>bid 0.14 · won</b> 767f4167bb2405736b080ac4f715af44b04562617336e852e0af71ce41aed2d9</li>
+            <li><b>bid 0.12 · won</b> d17db195c92ff7e161d03bf8bcf60d1d16b6529b9ed3769e93fa8d4616d4a14f</li>
+            <li><b>bid 0.11 · won</b> 0a008bf0c921fa13b68299983bec48d1a998a3354f3ec1f20eca0cd2e4a1e2af</li>
+            <li><b>bid 0.10 · lost</b> 41095e4d9a680f20aa73c4ba034550057ccbb1cd7132470fa7610efaed9d6021</li>
+            <li><b>bid 0.04 · below min bid</b> 81e9a64227e3269ec326483ca411ca53e19dfe80a477c98d9fc76cf27cc73765</li>
+            <li><b>bid 0.13 · late</b> 395127833d38d27956fdd316c9d27633ffb4a72ff032e00daf7821f17bf648da</li>
+            <li><b>refunds · 5 outputs</b> 7803d3fcd33325102279420f6382d364f10c485409b4d5a5d41c88188cf1a677</li>
+          </ul>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -572,5 +673,6 @@
 </noscript>
 
 <script type="module" src="assets/app.js"></script>
+<script type="module" src="assets/explainer.js"></script>
 </body>
 </html>

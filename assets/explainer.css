@@ -1,0 +1,87 @@
+/* "What is Secbid" explainer on the landing page; colours come from tokens.css. */
+.xp { padding: 72px 0 40px; border-top: 1px solid var(--line); }
+.xp h2 { font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.03em; line-height: 1.1; margin: 8px 0 14px; }
+.xp-lede { color: var(--ink-1); max-width: 760px; margin: 0 0 28px; font-size: 17px; }
+.xp-lede b { color: var(--ink); font-weight: 600; }
+
+.xp-bar { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.xp-seg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.xp-seg > span { color: var(--ink-2); font: 600 11px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; margin-right: 4px; }
+.xp button {
+  background: transparent; color: var(--ink-1); border: 1px solid var(--line-strong);
+  padding: 8px 14px; font: 500 14px var(--font-sans); cursor: pointer; border-radius: 999px;
+}
+.xp button:hover { color: var(--ink); border-color: var(--ink-2); }
+.xp button[aria-pressed="true"] { background: var(--ink); color: var(--void); border-color: var(--ink); }
+.xp-ctl { display: flex; gap: 6px; }
+
+.xp-stage-wrap { border: 1px solid var(--line); background: var(--surface-1); overflow-x: auto; }
+.xp-stage { display: block; width: 100%; min-width: 640px; height: auto; font-family: var(--font-mono); }
+.xp-stage text { fill: var(--ink); font-size: 14px; text-anchor: middle; }
+.xp-stage .xp-left { text-anchor: start; }
+.xp-stage .xp-k { font-weight: 600; }
+.xp-stage .xp-dim { fill: var(--ink-2); font-size: 12px; }
+.xp-stage .xp-glyph { font-size: 18px; font-weight: 600; }
+.xp-path { fill: none; stroke: var(--line-strong); stroke-dasharray: 3 5; }
+.xp-link { fill: none; stroke: var(--ink-3); stroke-dasharray: 4 4; }
+.xp-vault rect { fill: var(--surface-2); stroke: var(--ink-1); }
+.xp-auc circle, .xp-bidder circle { fill: var(--surface-2); stroke: var(--ink-2); transition: stroke 0.4s, fill 0.4s; }
+.xp-rules rect, .xp-anyone rect { fill: var(--void); stroke: var(--line-strong); }
+.xp-price rect { fill: var(--ink); }
+.xp-stage .xp-price text { fill: var(--void); font-weight: 600; }
+.xp-stage .xp-pass { fill: var(--pass); font-size: 22px; font-weight: 700; }
+
+.xp-bidder.xp-me circle { stroke: var(--ink); fill: var(--surface-0); }
+.xp-bidder.xp-win circle { stroke: var(--pass); }
+.xp-stage .xp-bidder.xp-win .xp-out { fill: var(--pass); }
+.xp-stage .xp-bidder.xp-lost .xp-out { fill: var(--ink-1); }
+
+/* things that appear from a given scene on */
+.xp-rules, .xp-price, .xp-anyone, .xp-hide { opacity: 0; transition: opacity 0.6s; }
+.xp-on { opacity: 1; }
+
+.xp-env { transition: transform 1.1s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.4s; }
+.xp-env rect { fill: var(--ink); }
+.xp-env path { fill: none; stroke: var(--void); stroke-width: 1.5; }
+.xp-bid.xp-late rect { fill: var(--warn); }
+.xp-refund { opacity: 0; }
+.xp-refund rect { fill: var(--pass); }
+.xp-refund.xp-in { opacity: 1; }
+
+.xp-caption { margin: 16px 0 6px; font-size: 17px; line-height: 1.55; min-height: 3.2em; max-width: 900px; }
+.xp-caption b { font-weight: 600; }
+.xp-lens-note { color: var(--ink-2); margin: 0 0 14px; font-size: 14px; }
+.xp-chain { display: flex; flex-wrap: wrap; gap: 6px; font: 12px var(--font-mono); color: var(--ink-2); align-items: center; }
+.xp-chain em { font-style: normal; text-transform: uppercase; letter-spacing: 0.12em; margin-right: 6px; font-weight: 600; }
+.xp-chain span { border: 1px solid var(--line-strong); padding: 3px 8px; }
+.xp-chain .hl { color: var(--ink); border-color: var(--ink-2); }
+
+/* who knows what */
+.xp-who { margin: 56px 0 0; overflow-x: auto; }
+.xp-who h3, .xp-proof h3 { font-size: 22px; margin: 0 0 14px; }
+.xp-who table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 640px; }
+.xp-who th, .xp-who td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.xp-who thead th { color: var(--ink-2); font: 600 11px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.xp-who tbody th { font-weight: 500; color: var(--ink-1); width: 22%; }
+.xp-who td { color: var(--ink-2); }
+.xp-who td.xp-us { color: var(--ink); background: var(--surface-1); font-weight: 500; }
+.xp-who thead th.xp-us { color: var(--ink); background: var(--surface-1); }
+
+/* the evidence */
+.xp-proof { margin: 56px 0 0; }
+.xp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.xp-card { display: grid; gap: 8px; align-content: start; border: 1px solid var(--line-strong); padding: 20px; color: var(--ink); text-decoration: none; transition: border-color 0.2s, background 0.2s; }
+.xp-card:hover { border-color: var(--ink-1); background: var(--surface-1); }
+.xp-card b { font-size: 17px; }
+.xp-card span { color: var(--ink-1); font-size: 14px; }
+.xp-card small { color: var(--ink-2); font: 12px var(--font-mono); }
+.xp-card .xp-big { font: 700 28px var(--font-mono); color: var(--pass); }
+.xp-txids { margin-top: 16px; font-size: 14px; color: var(--ink-1); }
+.xp-txids summary { cursor: pointer; }
+.xp-txids ul { list-style: none; padding: 0; margin: 10px 0 0; font: 12px var(--font-mono); color: var(--ink-2); display: grid; gap: 4px; word-break: break-all; }
+.xp-txids b { color: var(--ink-1); font-weight: 500; }
+
+@media (max-width: 720px) {
+  .xp { padding: 48px 0 24px; }
+  .xp-caption { font-size: 15px; }
+}
