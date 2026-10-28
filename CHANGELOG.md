@@ -3,6 +3,10 @@
 All notable changes to Secbid. The current spec is v2; spec-1 fixtures remain valid and verify
 unchanged.
 
+## Unreleased
+
+- Landing page: "What is Secbid" explainer — the testnet-01 run in four scenes, three lenses (public, auctioneer, bidder), a who-knows-what table and the evidence (PASS 14/14 on testnet, sandbox, txids).
+
 ## v2 — implementation
 
 - **Spec 2 artifacts.** `spec`, `rule`, `units`, `pool`, `mode`, `bond` and `pool_warning` in
