@@ -7,6 +7,7 @@
  */
 
 import { renderQR } from './qr.js';
+import { isStatic, staticPath } from './static-api.js';
 import {
   b64ToBytes,
   buildMemo,
@@ -89,6 +90,7 @@ const state = {
   memoText: '',
 };
 
+const STATIC = isStatic();
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
@@ -144,7 +146,7 @@ function clamp(n, lo, hi) {
 }
 
 async function getJSON(path) {
-  const res = await fetch(path, { headers: { accept: 'application/json' } });
+  const res = await fetch(STATIC ? staticPath(path) : path, { headers: { accept: 'application/json' } });
   if (!res.ok) throw new Error(`${path} → HTTP ${res.status}`);
   return res.json();
 }
