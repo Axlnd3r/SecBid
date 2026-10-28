@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="secbid-static" content="1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>Secbid — sealed-bid auctions on Zcash</title>
+<meta name="description" content="A sealed-bid auction where the bid is a shielded ZEC payment. Price is public. Bidders are not. Every auction is verifiable from the chain alone.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000000'/%3E%3Cpath d='M9 11h14M16 11v13M12 8h8M11 24h10' stroke='%23f5f5f5' stroke-width='2.2' stroke-linecap='square'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="scroll-progress" aria-hidden="true"><span data-progress></span></div>
+
+<header class="nav" id="top">
+  <div class="nav-inner">
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#auction">Auction</a>
+      <a href="#result">Result</a>
+      <a href="#entries">Entries</a>
+      <a href="#verify">Verify</a>
+      <a href="#proof">Proof</a>
+      <a href="#quantum">Quantum</a>
+      <a href="#trust">Trust</a>
+    </nav>
+    <a class="brand" href="#top" aria-label="Secbid, back to top">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path d="M9 11h14M16 11v13M12 8h8M11 24h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+      </svg>
+      <span class="brand-name">Secbid</span>
+      <span class="tag" data-network>testnet</span>
+    </a>
+    <div class="nav-right">
+      <div class="nav-tip" aria-label="Chain height">
+        <span class="nav-tip-label">height</span>
+        <span class="mono" data-tip>—</span>
+      </div>
+      <a class="nav-action" href="#verify">Verify</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ── hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="hero-badges reveal" data-reveal>
+          <p class="hero-version">
+            <span class="mono" data-eyebrow>auction —</span>
+            <span class="version-chip" data-rule-note>—</span>
+          </p>
+        </div>
+        <h1 class="display" data-focus>
+          Price is public.<br>
+          <span class="display-dim">Bidders are not.</span>
+        </h1>
+
+        <figure class="hero-art reveal" data-reveal data-hero-art>
+          <span class="hero-x-halo" aria-hidden="true"></span>
+          <svg class="hero-x" viewBox="0 0 640 640" role="img" aria-labelledby="hero-x-title">
+            <title id="hero-x-title">The Secbid mark: an X drawn as grain — a bid that leaves only a speck, never an amount.</title>
+            <defs>
+              <filter id="hero-stipple" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="soft"/>
+                <feTurbulence type="fractalNoise" baseFrequency="0.3" numOctaves="4" seed="23" result="noise"/>
+                <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="grain"/>
+                <feComposite in="soft" in2="grain" operator="arithmetic" k1="0" k2="1" k3="1" k4="-0.97" result="mix"/>
+                <feComponentTransfer in="mix">
+                  <feFuncR type="linear" slope="0" intercept="1"/>
+                  <feFuncG type="linear" slope="0" intercept="1"/>
+                  <feFuncB type="linear" slope="0" intercept="1"/>
+                  <feFuncA type="discrete" tableValues="0 1"/>
+                </feComponentTransfer>
+              </filter>
+            </defs>
+            <g class="hero-x-grain" filter="url(#hero-stipple)" fill="#fff">
+              <!-- A soft copy widens the threshold band, so the silhouette sheds dust instead of ending on a line. -->
+              <g transform="translate(320 320) scale(0.88) translate(-320 -320)" opacity="0.45">
+                <path d="M350.2 287.2L68.1 140.4L48 170.2L289.8 376.8Z"/>
+                <path d="M346.1 372.3L604.4 164L589.1 140.5L293.9 291.7Z"/>
+                <path d="M292 290.5L62.9 480.1L86.3 514.9L348 373.5Z"/>
+                <path d="M288 373L563.9 542.9L583.6 517.6L352 291Z"/>
+                <circle cx="320" cy="332" r="84"/>
+              </g>
+              <g transform="translate(320 320) scale(0.88) translate(-320 -320)">
+                <path d="M350.2 287.2L68.1 140.4L48 170.2L289.8 376.8Z"/>
+                <path d="M346.1 372.3L604.4 164L589.1 140.5L293.9 291.7Z"/>
+                <path d="M292 290.5L62.9 480.1L86.3 514.9L348 373.5Z"/>
+                <path d="M288 373L563.9 542.9L583.6 517.6L352 291Z"/>
+                <circle cx="320" cy="332" r="84"/>
+                <circle cx="336" cy="340" r="54"/>
+              </g>
+            </g>
+          </svg>
+        </figure>
+
+        <div class="cta-row reveal" data-reveal>
+          <a class="btn btn-primary" href="#auction">Place a bid</a>
+          <a class="btn" href="#verify">Verify this auction</a>
+        </div>
+      </div>
+    </div>
+    <div class="container hero-foot">
+      <p class="trusted-label">Verifiable with</p>
+      <ul class="trusted-logos">
+        <li>Zcash</li>
+        <li>Orchard</li>
+        <li>ZIP-321</li>
+        <li>SHA-256</li>
+        <li>WebCrypto</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── how ──────────────────────────────────────────────────────────── -->
+  <section class="section" id="how">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">The whole protocol</p>
+        <h2>Three moves, no intermediary reading your number.</h2>
+        <p class="section-lede">
+          The auction is a shielded address plus a deadline in block height. Bids are payments.
+          Clearing is a pure function. Nothing is hidden from the verifier — only from the market.
+        </p>
+      </header>
+
+      <ol class="steps">
+        <li class="step reveal" data-reveal>
+          <span class="step-index mono">01</span>
+          <h3>Open</h3>
+          <p>
+            The seller publishes a fresh shielded address, a reserve, a clearing rule, and a
+            deadline height. The dashboard reveals only a hash of the viewing key it will disclose later.
+          </p>
+          <p class="step-detail mono">params_hash committed at open</p>
+        </li>
+        <li class="step reveal" data-reveal>
+          <span class="step-index mono">02</span>
+          <h3>Bid</h3>
+          <p>
+            A bidder sends ZEC from any ZIP-321 wallet with a memo holding a fresh shielded refund
+            address. The amount never leaves the ciphertext. Transparent funding is rejected.
+          </p>
+          <p class="step-detail mono">memo ≤ 512 bytes · encrypted to the auction</p>
+        </li>
+        <li class="step reveal" data-reveal>
+          <span class="step-index mono">03</span>
+          <h3>Settle</h3>
+          <p>
+            After the deadline the auctioneer clears, publishes a root and a leaf table, refunds
+            every loser in one batch, and reveals the UFVK so anyone can rescan and recompute.
+          </p>
+          <p class="step-detail mono">one batch · one height · inclusion proof per bid</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── auction / bid ────────────────────────────────────────────────── -->
+  <section class="section" id="auction">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Auction <span class="mono" data-auction-id>—</span></p>
+        <h2>Bid by paying. That is the entire bid.</h2>
+        <p class="section-lede">
+          Scan this payment request from Zashi, YWallet, or Zingo!. The memo carries your refund
+          address; without it the note is <em class="warn-text">stranded</em> and cannot be returned.
+        </p>
+      </header>
+
+      <dl class="facts reveal" data-reveal>
+        <div class="fact">
+          <dt>Clearing price</dt>
+          <dd data-fact="price">—</dd>
+        </div>
+        <div class="fact">
+          <dt>Leaves committed</dt>
+          <dd data-fact="entries">—</dd>
+        </div>
+        <div class="fact">
+          <dt>Refund batch</dt>
+          <dd data-fact="refunds">—</dd>
+        </div>
+        <div class="fact">
+          <dt>Verifier</dt>
+          <dd data-fact="checks">—</dd>
+        </div>
+      </dl>
+
+      <p class="callout callout-warn mono small reveal" data-reveal data-fresh-note>
+        Use a fresh shielded address in the memo for every bid.
+      </p>
+
+      <div class="bid-layout">
+        <div class="ticket-card reveal" data-reveal>
+          <div class="ticket">
+            <p class="ticket-label mono">ZIP-321 payment request</p>
+            <div class="qr-frame" data-qr role="img" aria-label="QR code of the auction payment request"></div>
+            <p class="ticket-address mono" data-address>—</p>
+            <div class="ticket-actions">
+              <button class="btn btn-small" type="button" data-copy="address">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor"/><path d="M10.5 3.5v-1a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h1" fill="none" stroke="currentColor"/></svg>
+                Copy address
+              </button>
+              <button class="btn btn-small" type="button" data-copy="uri">Copy payment URI</button>
+            </div>
+            <p class="ticket-hint mono" data-copy-status aria-live="polite">reserve <span data-reserve>—</span> · min bid <span data-min-bid>—</span></p>
+          </div>
+
+          <div class="timeline">
+            <div class="timeline-head">
+              <span class="mono small dim">block height</span>
+              <span class="mono small" data-clock>—</span>
+            </div>
+            <div class="bar" aria-hidden="true"><span class="bar-fill" data-bar></span></div>
+            <div class="timeline-marks mono small">
+              <span>open <b data-open-height>—</b></span>
+              <span>deadline <b data-deadline>—</b></span>
+              <span>settled <b data-settle-height>—</b></span>
+            </div>
+            <p class="timeline-note mono small dim" data-countdown>—</p>
+          </div>
+        </div>
+
+        <div class="bid-side">
+          <div class="wallets reveal" data-reveal>
+            <div class="wallets-head">
+              <h3>How to bid from a wallet</h3>
+              <div class="tabs" role="group" aria-label="Wallet">
+                <button class="tab" type="button" aria-pressed="true" data-wallet="zashi">Zashi</button>
+                <button class="tab" type="button" aria-pressed="false" data-wallet="ywallet">YWallet</button>
+                <button class="tab" type="button" aria-pressed="false" data-wallet="zingo">Zingo!</button>
+              </div>
+            </div>
+            <ol class="wallet-steps" data-wallet-steps>
+              <li>—</li>
+            </ol>
+            <p class="callout callout-warn mono small">
+              Warn — a bid without a memo has no refund address. It is received, classified
+              <b>stranded</b>, and stays in the auction account.
+            </p>
+          </div>
+
+          <div class="params reveal" data-reveal>
+            <h3>Published parameters</h3>
+            <dl class="param-table" data-params></dl>
+            <div class="memo">
+              <div class="memo-head">
+                <span class="mono small dim">memo template · UTF-8</span>
+                <button class="link-btn mono small" type="button" data-copy="memo">copy</button>
+              </div>
+              <pre class="memo-body mono" data-memo>—</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── result / settlement ──────────────────────────────────────────── -->
+  <section class="section" id="result">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Settlement</p>
+        <h2 data-result-headline>—</h2>
+        <p class="section-lede">
+          Everything below is published by the auctioneer at settlement, and recomputed by the
+          verifier from the same bytes. The UFVK reveal is what turns this into a replayable audit.
+        </p>
+      </header>
+
+      <div class="result-grid">
+        <div class="price-card reveal" data-reveal>
+          <p class="mono small dim">clearing price</p>
+          <p class="price" data-price>—</p>
+          <p class="mono small dim" data-price-zat>—</p>
+          <div class="price-meta">
+            <span class="tag" data-result-tag>—</span>
+            <span class="mono small dim" data-price-rule>first price · highest eligible bid</span>
+          </div>
+        </div>
+
+        <div class="accounting reveal" data-reveal>
+          <h3>Accounting identity</h3>
+          <p class="mono small dim">in = refunded + retained + stranded + fees</p>
+          <ul class="stack" data-accounting></ul>
+          <p class="note small">
+            Only publishable aggregates appear here. Total bid volume and the stranded total are
+            recovered by the verifier from the chain view, never published.
+          </p>
+        </div>
+      </div>
+
+      <div class="params reveal" data-reveal>
+        <h3>Winning leaves · filled units, never bid amounts</h3>
+        <ul class="proof-facts" data-winners></ul>
+      </div>
+
+      <div class="hash-grid">
+        <div class="hash-card reveal" data-reveal>
+          <p class="mono small dim">Merkle root over every bid</p>
+          <p class="hash mono" data-root>—</p>
+          <button class="link-btn mono small" type="button" data-copy="root">copy root</button>
+        </div>
+        <div class="hash-card reveal" data-reveal>
+          <p class="mono small dim">Winning leaf</p>
+          <p class="hash mono" data-winner>—</p>
+          <button class="link-btn mono small" type="button" data-copy="winner">copy leaf</button>
+        </div>
+        <div class="hash-card reveal" data-reveal>
+          <p class="mono small dim">Commitments</p>
+          <p class="hash mono" data-commit-params>—</p>
+          <p class="hash mono" data-commit-settlement>—</p>
+          <p class="mono small dim" data-commit-note>params_hash · settlement_hash</p>
+        </div>
+        <div class="hash-card reveal" data-reveal>
+          <p class="mono small dim">Refund batch</p>
+          <p class="hash mono" data-refund-tx>—</p>
+          <p class="mono small dim" data-refund-note>one transaction · one height</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── entries ──────────────────────────────────────────────────────── -->
+  <section class="section" id="entries">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Leaf table</p>
+        <h2>Every note, and how it was resolved.</h2>
+        <p class="section-lede">
+          A leaf is <span class="mono small">SHA256("secbid:leaf:v1" ‖ txid ‖ note_commitment)</span> —
+          no amount, no address, no memo. There is no amount column here, by design: the chain never
+          published one.
+        </p>
+      </header>
+
+      <div class="table-tools reveal" data-reveal>
+        <div class="filters" role="group" aria-label="Filter entries by outcome" data-filters></div>
+        <p class="mono small dim" data-table-count>—</p>
+      </div>
+
+      <div class="table-wrap reveal" data-reveal>
+        <table class="entries">
+          <caption class="sr-only">Settlement entries for this auction</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="col-idx">#</th>
+              <th scope="col">Leaf</th>
+              <th scope="col" class="col-height">Height</th>
+              <th scope="col" class="col-height">Qty</th>
+              <th scope="col" class="col-height">Filled</th>
+              <th scope="col">Outcome</th>
+              <th scope="col" class="col-tx">Funding tx</th>
+              <th scope="col" class="col-tx">Refund tx</th>
+            </tr>
+          </thead>
+          <tbody data-entries></tbody>
+        </table>
+        <p class="empty" data-entries-empty hidden>No entries match that filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── verify ───────────────────────────────────────────────────────── -->
+  <section class="section" id="verify">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Independent verification</p>
+        <h2>Fourteen checks. One of them catches each lie.</h2>
+        <p class="section-lede">
+          Run the verifier against the published artifacts, then against a settlement that adopts
+          every published hash and still lies. Each tampered set fails a different check.
+        </p>
+      </header>
+
+      <div class="verify-panel reveal" data-reveal>
+        <div class="verify-controls">
+          <label class="field">
+            <span class="mono small dim">artifacts</span>
+            <select class="select mono" data-artifact-select></select>
+          </label>
+          <label class="field">
+            <span class="mono small dim">mode</span>
+            <select class="select mono" data-mode-select>
+              <option value="fixture">fixture</option>
+              <option value="audit">audit</option>
+            </select>
+          </label>
+          <button class="btn btn-primary" type="button" data-run-verify>Run verifier</button>
+        </div>
+        <p class="verify-hint mono small dim" data-verify-hint>
+          audit mode skips the checks that need a rescan; fixture mode uses the recorded chain view.
+        </p>
+      </div>
+
+      <aside class="terminal reveal" data-reveal aria-label="Verifier output — the same command a judge runs">
+        <div class="terminal-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="terminal-title mono">node src/cli.ts verify</span>
+          <span class="tag" data-terminal-verdict>—</span>
+        </div>
+        <pre class="terminal-body mono" data-terminal><span class="term-comment">loading published artifacts…</span></pre>
+        <div class="terminal-foot mono">
+          <span>no network · 14 deterministic checks</span>
+          <span data-terminal-time>—</span>
+        </div>
+      </aside>
+
+      <div class="verdict reveal" data-reveal data-verdict>
+        <span class="verdict-mark" data-verdict-mark>—</span>
+        <div>
+          <p class="verdict-title" data-verdict-title>—</p>
+          <p class="verdict-detail mono small" data-verdict-detail>—</p>
+        </div>
+      </div>
+
+      <ul class="checks" data-checks></ul>
+    </div>
+  </section>
+
+  <!-- ── proof check ──────────────────────────────────────────────────── -->
+  <section class="section" id="proof">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Bidder-side</p>
+        <h2>Check your own inclusion proof, in the browser.</h2>
+        <p class="section-lede">
+          Losers receive an encrypted memo with their Merkle path, outcome, and price. Paste it here:
+          the check runs locally with WebCrypto, so no proof leaves this tab.
+        </p>
+      </header>
+
+      <div class="proof-layout">
+        <div class="proof-input reveal" data-reveal>
+          <div class="proof-toolbar">
+            <label class="field">
+              <span class="mono small dim">leaf</span>
+              <select class="select mono" data-leaf-select></select>
+            </label>
+            <button class="btn btn-small" type="button" data-sample-memo>Load sample memo</button>
+            <button class="btn btn-small" type="button" data-tamper-memo>Flip a byte</button>
+          </div>
+          <label class="field field-block">
+            <span class="mono small dim">memo · base64</span>
+            <textarea class="textarea mono" rows="6" spellcheck="false" data-memo-input placeholder="SB1… paste the 512-byte memo, base64-encoded"></textarea>
+          </label>
+          <div class="proof-actions">
+            <button class="btn btn-primary" type="button" data-check-memo>Verify memo</button>
+            <span class="mono small dim">runs locally · 0 requests</span>
+          </div>
+        </div>
+
+        <div class="proof-result reveal" data-reveal data-proof-result>
+          <p class="mono small dim">result</p>
+          <p class="proof-verdict" data-proof-verdict>—</p>
+          <ul class="proof-facts" data-proof-facts></ul>
+          <pre class="proof-problems mono small" data-proof-problems hidden></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── quantum ──────────────────────────────────────────────────────── -->
+  <section class="section" id="quantum">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Quantum posture</p>
+        <h2>What a future discrete-log break would see.</h2>
+        <p class="section-lede">
+          Recoverable, not post-quantum. This tab reads <span class="mono small">quantum.json</span>:
+          the pool each note sits in, the long-lived artifacts already published, and refund
+          addresses that were reused. The disclaimer below is part of the artifact.
+        </p>
+      </header>
+
+      <dl class="facts reveal" data-reveal>
+        <div class="fact"><dt>Auction pool</dt><dd data-quantum-pool>—</dd></div>
+        <div class="fact"><dt>Notes observed</dt><dd data-quantum-notes>—</dd></div>
+        <div class="fact"><dt>Recoverable</dt><dd data-quantum-recoverable>—</dd></div>
+        <div class="fact"><dt>Reused refunds</dt><dd data-quantum-reuse>—</dd></div>
+      </dl>
+
+      <div class="bid-layout">
+        <div class="params reveal" data-reveal>
+          <h3>Published long-lived items</h3>
+          <dl class="param-table" data-quantum-published></dl>
+        </div>
+        <div class="params reveal" data-reveal>
+          <h3>Residual exposure</h3>
+          <ul class="wallet-steps" data-quantum-exposed></ul>
+          <p class="callout callout-warn mono small" data-quantum-disclaimer>
+            Quantum-recoverable is not post-quantum.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── trust ────────────────────────────────────────────────────────── -->
+  <section class="section" id="trust">
+    <div class="container">
+      <header class="section-head reveal" data-reveal>
+        <p class="eyebrow">Disclosures</p>
+        <h2>What this does not protect you from.</h2>
+        <p class="section-lede">
+          Privacy is a precondition for the market to exist, not a marketing claim. These are the
+          leaks and trust assumptions we know about, published rather than discovered later.
+        </p>
+      </header>
+      <div class="trust-grid">
+        <article class="trust-card reveal" data-reveal>
+          <h3>Custody is trusted</h3>
+          <p>
+            Bids sit in an account whose spending key the auctioneer holds. Zcash has no escrow
+            contract and no timelock on the shielded pool.
+          </p>
+        </article>
+        <article class="trust-card reveal" data-reveal>
+          <h3>Refunds are auditable, not guaranteed</h3>
+          <p>
+            A pre-committed OVK can prove that a refund is missing. It cannot prevent it. Detection
+            matters only behind a bond, a reputation, or a legal counterparty.
+          </p>
+        </article>
+        <article class="trust-card reveal" data-reveal>
+          <h3>Inclusion proofs prove inclusion</h3>
+          <p>
+            An omitted bid is a bid with no object to point at. Detectable from chain data in public
+            tenders; otherwise only if the bidder discloses their own bid.
+          </p>
+        </article>
+        <article class="trust-card reveal" data-reveal>
+          <h3>Delivery ends the privacy</h3>
+          <p>
+            Handing over a physical lot, an NFT, or a contract re-identifies the winner. Privacy
+            stops at settlement, and this page says so before you bid.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="brand-name">Secbid</p>
+      <p class="small dim">Sealed-bid auctions on Zcash, where the bid is a shielded payment.</p>
+    </div>
+    <div class="footer-cmds mono small">
+      <p><span class="term-prompt">$</span> node src/cli.ts verify fixtures/auction-01</p>
+      <p><span class="term-prompt">$</span> node src/cli.ts uri fixtures/auction-01</p>
+      <p><span class="term-prompt">$</span> node src/cli.ts demo --out demo-out</p>
+      <p><span class="term-prompt">$</span> node src/cli.ts quantum-report fixtures/auction-02</p>
+    </div>
+    <p class="small dim footer-note">
+      Simulated chain · fixtures are read-only · the page never receives bid amounts,
+      refund addresses, or memos.
+    </p>
+  </div>
+</footer>
+
+<noscript>
+  <p class="noscript">This page needs JavaScript to read the published artifacts. The same checks run headless: <code>node src/cli.ts verify fixtures/auction-01</code>.</p>
+</noscript>
+
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
