@@ -1,0 +1,96 @@
+/*
+ * The cinematic intro at the top of the landing page: the auction-hall clip in black and white,
+ * a scroll-driven story in three beats, then the site. --p (0..1) is set from the scroll position.
+ */
+.intro { position: relative; height: 420vh; background: #000; color: #f2f2f2; --p: 0; }
+.intro-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.intro-media, .intro-media img, .intro-media video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.intro-media { transform: scale(calc(1.04 + var(--p) * 0.12)); transform-origin: 60% 40%; }
+.intro-media img, .intro-media video { filter: grayscale(1) contrast(1.08) brightness(calc(0.78 - var(--p) * 0.32)); }
+.intro-media video { opacity: 0; transition: opacity 1.2s; }
+.intro-media video.is-playing { opacity: 1; }
+.intro-shade {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 55%, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.75) 80%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 22%, transparent 70%, rgba(0, 0, 0, 0.85));
+}
+.intro-grain {
+  position: absolute; inset: -50%; opacity: 0.14; pointer-events: none; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: intro-grain 0.9s steps(4) infinite;
+}
+@keyframes intro-grain {
+  0% { transform: translate(0, 0); } 25% { transform: translate(-6%, 4%); }
+  50% { transform: translate(5%, -3%); } 75% { transform: translate(-3%, -6%); } 100% { transform: translate(0, 0); }
+}
+
+/* frame: corners like a film slate */
+.intro-top, .intro-bottom {
+  position: absolute; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 24px; padding: 28px clamp(16px, 4vw, 56px); font: 600 12px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase;
+}
+.intro-top { top: 0; }
+.intro-bottom { bottom: 0; align-items: flex-end; color: rgba(242, 242, 242, 0.7); }
+.intro-top nav { display: flex; gap: 22px; }
+.intro a { color: inherit; text-decoration: none; }
+.intro-top a:hover, .intro-bottom a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.intro-meta { color: rgba(242, 242, 242, 0.75); line-height: 1.6; }
+.intro-scroll { display: inline-flex; gap: 10px; align-items: center; }
+.intro-scroll i { width: 1px; height: 34px; background: rgba(242, 242, 242, 0.5); display: inline-block; animation: intro-drip 1.8s ease-in-out infinite; transform-origin: top; }
+@keyframes intro-drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+/* the title */
+.intro-title {
+  position: absolute; left: clamp(16px, 6vw, 120px); top: 50%; transform: translateY(-40%);
+  transition: opacity 0.8s, transform 0.8s;
+}
+.intro-title p { margin: 0 0 22px; font: 600 clamp(11px, 1.1vw, 15px) var(--font-mono); letter-spacing: 0.24em; text-transform: uppercase; color: rgba(242, 242, 242, 0.8); }
+.intro-title h1 {
+  margin: 0; font: 400 clamp(84px, 13vw, 210px) / 0.9 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  letter-spacing: -0.02em; color: #fff; text-shadow: 0 6px 60px rgba(0, 0, 0, 0.6);
+}
+.intro-title span { display: block; margin-top: 22px; font-size: clamp(16px, 1.6vw, 22px); color: rgba(242, 242, 242, 0.85); max-width: 30ch; }
+.intro[data-beat="1"] .intro-title, .intro[data-beat="2"] .intro-title,
+.intro[data-beat="3"] .intro-title, .intro[data-beat="4"] .intro-title { opacity: 0; transform: translateY(-55%); pointer-events: none; }
+
+/* the beats */
+.intro-beats { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.intro-beat {
+  grid-area: 1 / 1; width: min(980px, calc(100% - 32px)); opacity: 0; transform: translateY(28px);
+  transition: opacity 0.7s, transform 0.7s; text-align: left;
+}
+.intro-beat small { display: block; font: 600 12px var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(242, 242, 242, 0.65); margin-bottom: 18px; }
+.intro-beat b {
+  display: block; font: 400 clamp(40px, 6.4vw, 96px) / 1.02 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  letter-spacing: -0.02em; color: #fff;
+}
+.intro-beat b em { font-style: italic; color: rgba(242, 242, 242, 0.6); }
+.intro-beat p { margin: 24px 0 0; font-size: clamp(16px, 1.5vw, 21px); line-height: 1.5; color: rgba(242, 242, 242, 0.85); max-width: 46ch; }
+.intro[data-beat="1"] [data-b="1"], .intro[data-beat="2"] [data-b="2"],
+.intro[data-beat="3"] [data-b="3"], .intro[data-beat="4"] [data-b="4"] { opacity: 1; transform: none; pointer-events: auto; }
+.intro-enter {
+  display: inline-flex; margin-top: 34px; padding: 16px 26px; border: 1px solid #fff; color: #fff;
+  font: 600 14px var(--font-mono); letter-spacing: 0.18em; text-transform: uppercase; transition: background 0.2s, color 0.2s;
+}
+.intro-enter:hover { background: #fff; color: #000; }
+
+.intro-progress { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: rgba(255, 255, 255, 0.08); }
+.intro-progress i { display: block; height: 100%; width: 100%; background: #fff; transform: scaleX(var(--p)); transform-origin: left; }
+
+@media (max-width: 720px) {
+  .intro-top nav a:not(.intro-skip) { display: none; }
+  .intro-meta { display: none; }
+}
+
+/* no motion: the story reads as a plain stack, no scrubbing */
+@media (prefers-reduced-motion: reduce) {
+  .intro { height: auto; }
+  .intro-stage { position: relative; height: auto; min-height: 100vh; }
+  .intro-grain, .intro-scroll i { animation: none; }
+  .intro-title { position: relative; top: auto; left: auto; transform: none; padding: 140px clamp(16px, 6vw, 120px) 40px; opacity: 1 !important; }
+  .intro-beats { position: relative; display: grid; gap: 64px; padding: 0 0 140px; place-items: start center; }
+  .intro-beat { grid-area: auto; opacity: 1; transform: none; pointer-events: auto; }
+}

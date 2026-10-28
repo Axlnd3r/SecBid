@@ -39,3 +39,13 @@ test('the explainer section ships without inline script or style (CSP)', () => {
   assert.match(html, /<script type="module" src="\/assets\/explainer\.js"><\/script>/);
   assert.match(section, /sandbox\.html/);
 });
+
+test('the cinematic intro comes first, before the nav, and ships without inline script or style', () => {
+  const html = readFileSync(join(import.meta.dirname, '..', 'web', 'index.html'), 'utf8');
+  const start = html.indexOf('data-intro');
+  assert.ok(start > 0 && start < html.indexOf('<header class="nav"'));
+  const section = html.slice(start, html.indexOf('<header class="nav"'));
+  assert.doesNotMatch(section, /style=|<script/);
+  assert.match(section, /href="#explain" data-enter="skip"/); // always skippable
+  assert.match(html, /<script type="module" src="\/assets\/intro\.js"><\/script>/);
+});

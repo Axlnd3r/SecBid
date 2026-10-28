@@ -253,6 +253,7 @@ const MIME: Record<string, string> = {
   '.woff2': 'font/woff2',
   '.ico': 'image/x-icon',
   '.png': 'image/png',
+  '.jpg': 'image/jpeg',
   '.mp4': 'video/mp4',
   '.txt': 'text/plain; charset=utf-8',
 };

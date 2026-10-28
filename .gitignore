@@ -1,7 +1,9 @@
 node_modules/
 package-lock.json
 
-# demo film media (generated stills and clips, ~98 MB); the film falls back to drawn art without them
+# demo film media (generated stills and clips, ~98 MB); the film falls back to drawn art without them.
+# web/assets/intro/ holds the landing intro clip + poster; build:static ships it to GitHub Pages only.
 web/assets/film/
+web/assets/intro/
 # static build for GitHub Pages (npm run build:static), published from the gh-pages branch
 site/
