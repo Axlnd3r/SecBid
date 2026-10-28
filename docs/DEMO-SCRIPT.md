@@ -146,7 +146,7 @@ and the repo URL.
 | Did my bid count? | you trust them | **inclusion proof in your refund memo** |
 | Operator runs off? | escrow, or nothing | **bond + auditable custody** |
 
-## 2-minute cut (`film.html?cut=2`, 1:57)
+## 2-minute cut (`film.html`, 1:57)
 
 The submission form asks for two minutes. The cut keeps parts of every scene (some sped up, never the
 terminal output itself) and uses one shorter line per scene; captions follow these lines. Read at an
@@ -169,7 +169,7 @@ easy pace, about 100 words a minute:
 ## Playing the film
 
 The whole storyboard above is built as a browser animation: `npm run web`, then open
-<http://127.0.0.1:4190/film.html>. It is 1920×1080, 3:00, and every terminal
+<http://127.0.0.1:4190/film.html>. It is 1920×1080, 1:57 (`?cut=full`: 3:00), and every terminal
 line is real output from `fixtures/testnet-01` and `fixtures/tamper/t2-truncate`. Imagery in
 `web/assets/film/` was generated for this film with Higgsfield: archival-style stills with Soul Cinema
 (auction hall, auctioneer, envelope, tender box, six identity portraits, four use-case photos, the plaza)
@@ -186,7 +186,7 @@ without them.
 | `C` | captions on/off (burned-in narration) |
 | `H` | timer overlay |
 
-Record: open `film.html?cut=2` for the two-minute version (plain `film.html` is the 3:00 cut). F11 fullscreen, `Win+Alt+R` to start/stop (Xbox Game Bar), then add the voice-over in
+Record: open `film.html` for the two-minute version (`film.html?cut=full` is the 3:00 cut). F11 fullscreen, `Win+Alt+R` to start/stop (Xbox Game Bar), then add the voice-over in
 Clipchamp. `?t=<seconds>` opens at a given time for retakes.
 
 ## Recording checklist

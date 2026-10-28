@@ -1285,9 +1285,9 @@ const SCENES = [
     },
   },
 ];
-/* ---------- the 2-minute cut (film.html?cut=2) ----------
+/* ---------- the 2-minute cut (the default; film.html?cut=full plays the 3:00 film) ----------
    Each scene keeps parts of its own timeline, [from, to, speed] in scene seconds, and gets a
-   shorter line so the captions are never rushed. Without ?cut=2 the full 3:00 film plays. */
+   shorter line so the captions are never rushed. The submission asks for two minutes. */
 const CUT2 = {
   'title': { keep: [[0, 5]], say: 'Secbid: sealed-bid auctions on Zcash, where the bid is a shielded payment.' },
   'sealed bids': { keep: [[0.3, 9.4], [14.5, 19.6]], say: 'A sealed bid only works if your competitors can’t see your number. On a transparent chain, every bid is visible.' },
@@ -1311,7 +1311,7 @@ const CUT2 = {
   'trust + quantum': { keep: [[0.3, 10.5, 1.35]], say: 'Custody is auditable, not trustless, and all six bids sit in the quantum-recoverable Ironwood pool.' },
   'close': { keep: [[0.2, 10]], say: 'No contract, chip or key holder to trust. Check it yourself.' },
 };
-const CUT = new URLSearchParams(location.search).get('cut') === '2';
+const CUT = new URLSearchParams(location.search).get('cut') !== 'full';
 
 /* the timeline actually played: one entry per scene, with its kept segments */
 const PLAN = [];
@@ -1367,6 +1367,13 @@ function grain(frame) {
 let now = 0, playing = false, last = 0, active = -1, state = null, gframe = -1, curSpeed = 1;
 const $cap = document.getElementById('cap'), $hud = document.getElementById('hud'), $start = document.getElementById('start');
 const $rail = document.getElementById('rail');
+{ // the start screen says which cut this is
+  const len = `${Math.floor(TOTAL / 60)}:${String(Math.round(TOTAL % 60)).padStart(2, '0')}`;
+  const tag = document.createElement('div');
+  tag.className = 'cut-tag';
+  tag.textContent = CUT ? `2-minute cut · ${len}` : `full film · ${len}`;
+  $start.firstElementChild.prepend(tag);
+}
 $rail.innerHTML = STEPS.map((x, i) => `<span>0${i + 1} ${x}</span>`).join('');
 function sceneAt(t) {
   for (let i = PLAN.length - 1; i >= 0; i--) if (t >= PLAN[i].start) return i;

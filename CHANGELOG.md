@@ -64,7 +64,7 @@ unchanged.
   plaza tracking boxes follow the people in each video frame; the close folds three trust spheres
   (contract, TEE, FHE) into one. 3:00. The web server now answers
   single byte-range requests (206/416) and serves `.mp4`, so the film can seek in video.
-- **2-minute cut.** `film.html?cut=2` (1:57): every scene keeps parts of its own timeline, some sped
+- **2-minute cut.** `film.html` (1:57, now the default; `?cut=full` plays 3:00): every scene keeps parts of its own timeline, some sped
   up, with one shorter narration line per scene; the full 3:00 film is unchanged.
 - **Sandbox (`web/sandbox.html`).** Anyone can open an auction, place bids (incl. late, transparent and
   memo-less ones), settle, run the 14 checks, cheat three ways and watch a named check fail, and check a

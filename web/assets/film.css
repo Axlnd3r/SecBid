@@ -121,3 +121,4 @@
   #start b { font: 600 64px var(--serif); display: block; margin-bottom: 18px; color: #fff; }
   #start kbd { font: 18px var(--mono); border: 1px solid #555; padding: 1px 8px; border-radius: 4px; }
   #start.off { display: none; }
+  .cut-tag { font: 600 18px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--pass); margin-bottom: 14px; }
