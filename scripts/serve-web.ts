@@ -5,6 +5,7 @@ import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { AccountFile, AuctionParams, BondView, Commitments, ProofMap, Reveal, RefundArtifact, ScanView, Settlement } from '../src/model.ts';
 import { verify, type Mode, type VerifyReport } from '../src/verify.ts';
+import { libClosure, libModule } from './strip-lib.ts';
 import {
   decodeAccount,
   decodeBondView,
@@ -280,6 +281,8 @@ function notFound(res: import('node:http').ServerResponse, api: boolean) {
   send(res, 404, '<!doctype html><title>404 — Secbid</title><h1>404</h1><p>No such page.</p>', MIME['.html']);
 }
 
+let sandboxModules: Set<string> | undefined;
+
 export function createWebServer(options: WebServerOptions = {}): Server {
   const cwd = resolve(options.cwd ?? fileURLToPath(new URL('..', import.meta.url)));
   const fixturesDir = resolve(options.fixturesDir ?? join(cwd, 'fixtures'));
@@ -342,6 +345,16 @@ export function createWebServer(options: WebServerOptions = {}): Server {
     }
 
     if (isApi) return notFound(res, true);
+
+    // the sandbox page imports the core as browser JS, stripped from src/ on request
+    const lib = /^\/lib\/([a-z0-9-]+)\.js$/.exec(pathname);
+    if (lib) {
+      sandboxModules ??= new Set(libClosure());
+      if (!sandboxModules.has(lib[1])) return notFound(res, false);
+      const body = libModule(lib[1]);
+      res.writeHead(200, { ...SECURITY_HEADERS, 'content-type': MIME['.js'], 'cache-control': 'no-store' });
+      return res.end(req.method === 'HEAD' ? undefined : body);
+    }
 
     const relative = normalize(pathname === '/' ? '/index.html' : pathname).replace(/^([/\\])+/, '');
     const filePath = resolve(join(webDir, relative));

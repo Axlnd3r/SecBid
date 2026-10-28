@@ -11,6 +11,7 @@ import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path';
 import type { AddressInfo } from 'node:net';
 import { createWebServer } from './serve-web.ts';
+import { libClosure, libModule } from './strip-lib.ts';
 
 const root = resolve(import.meta.dirname, '..');
 
@@ -45,12 +46,15 @@ export async function buildStatic(out: string): Promise<string[]> {
     await new Promise<void>((done) => server.close(() => done()));
   }
 
-  for (const page of ['index.html', 'film.html']) {
+  for (const page of ['index.html', 'film.html', 'sandbox.html']) {
     const p = join(out, page);
     let html = readFileSync(p, 'utf8').replaceAll('"/assets/', '"assets/');
     if (page === 'index.html') html = html.replace('<head>', '<head>\n<meta name="secbid-static" content="1">');
     writeFileSync(p, html);
   }
+  // the sandbox runs the core in the browser: write the stripped modules next to the page
+  mkdirSync(join(out, 'lib'), { recursive: true });
+  for (const name of libClosure()) writeFileSync(join(out, 'lib', `${name}.js`), libModule(name));
   writeFileSync(join(out, '.nojekyll'), ''); // serve files as-is (no Jekyll processing)
   return written;
 }

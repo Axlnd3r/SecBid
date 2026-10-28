@@ -66,6 +66,11 @@ unchanged.
   single byte-range requests (206/416) and serves `.mp4`, so the film can seek in video.
 - **2-minute cut.** `film.html?cut=2` (1:57): every scene keeps parts of its own timeline, some sped
   up, with one shorter narration line per scene; the full 3:00 film is unchanged.
+- **Sandbox (`web/sandbox.html`).** Anyone can open an auction, place bids (incl. late, transparent and
+  memo-less ones), settle, run the 14 checks, cheat three ways and watch a named check fail, and check a
+  bidder proof. `src/sandbox.ts` drives the real open → settle → refund → verify path on a simulated
+  chain; the browser runs it type-stripped from `src/` (`scripts/strip-lib.ts`) with Buffer and sha256
+  shims. `tests/browser-lib.test.ts` holds the browser build byte-identical to the TypeScript source.
 - **Static deploy.** `npm run build:static` renders every public API answer from the real server into
   `site/` (relative paths, `.nojekyll`) for GitHub Pages; `web/assets/static-api.js` maps API paths
   onto those files only when the page is marked static. Tested in `tests/static.test.ts`.

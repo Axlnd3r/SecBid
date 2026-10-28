@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secbid Sandbox</title>
+<meta name="description" content="Run your own sealed-bid auction: open it, place bids, settle, verify, and try to cheat. Simulated chain, the real Secbid settlement code.">
+<link rel="stylesheet" href="/assets/tokens.css">
+<link rel="stylesheet" href="/assets/sandbox.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./">Secbid</a>
+  <span class="chip">sandbox</span>
+  <nav><a href="./?a=testnet-01">Live testnet auction →</a></nav>
+</header>
+
+<main>
+  <section class="intro">
+    <h1>Run a sealed-bid auction yourself.</h1>
+    <p>Be the auctioneer, then every bidder. Close it, check the result, and try to cheat.
+      <strong>The chain is simulated; clearing, refunds, inclusion proofs and the 14 checks are the real
+      Secbid code</strong>, the same that settled the
+      <a href="./?a=testnet-01">testnet auction</a>. Nothing leaves your browser.</p>
+  </section>
+
+  <section class="step" data-step="1">
+    <h2><span class="n">01</span> Open the auction <small>you are the auctioneer</small></h2>
+    <form class="grid" data-open>
+      <label>Rule
+        <select name="rule">
+          <option value="uniform">uniform price (N units, one price)</option>
+          <option value="first-price">first price (1 lot)</option>
+        </select>
+      </label>
+      <label>Units for sale <input name="units" type="number" min="1" max="20" value="3"></label>
+      <label>Reserve (ZEC) <input name="reserve" value="0.1" inputmode="decimal"></label>
+      <label>Minimum bid (ZEC) <input name="minBid" value="0.05" inputmode="decimal"></label>
+      <button type="submit" class="primary">Open auction</button>
+    </form>
+    <div class="opened" data-opened hidden>
+      <div class="qr" data-qr></div>
+      <dl class="facts" data-facts></dl>
+    </div>
+  </section>
+
+  <section class="step" data-step="2" hidden>
+    <h2><span class="n">02</span> Place bids <small>you are each bidder</small></h2>
+    <p class="hint">Each bid is one shielded payment to the auction address. The memo carries the quantity and a fresh
+      refund address. Tick a box to try an edge case.</p>
+    <table class="bids">
+      <thead><tr><th>Bidder</th><th>Bid (ZEC)</th><th>Qty</th><th>After deadline</th><th>Transparent funds</th><th>No memo</th><th>What the chain shows</th><th></th></tr></thead>
+      <tbody data-bids></tbody>
+    </table>
+    <div class="row">
+      <button type="button" data-add>+ Add bidder</button>
+      <button type="button" data-example>Load the testnet example</button>
+      <button type="button" class="primary" data-settle>Close and settle →</button>
+    </div>
+  </section>
+
+  <section class="step" data-step="3" hidden>
+    <h2><span class="n">03</span> Result <small>settled by the deterministic rule</small></h2>
+    <div class="result" data-result></div>
+    <table class="outcomes">
+      <thead><tr><th>Bidder</th><th>Bid</th><th>Outcome</th><th>Pays</th><th>Refunded</th></tr></thead>
+      <tbody data-outcomes></tbody>
+    </table>
+  </section>
+
+  <section class="step" data-step="4" hidden>
+    <h2><span class="n">04</span> Verify <small>anyone can recompute this</small></h2>
+    <div class="row tamper" data-tamper>
+      <span>Publish as:</span>
+      <button type="button" class="on" data-t="none">honest auctioneer</button>
+      <button type="button" data-t="price">cheat: lower the price</button>
+      <button type="button" data-t="drop">cheat: drop a bid</button>
+      <button type="button" data-t="refund">cheat: skip the refunds</button>
+    </div>
+    <div class="verdict" data-verdict></div>
+    <ol class="checks" data-checks></ol>
+  </section>
+
+  <section class="step" data-step="5" hidden>
+    <h2><span class="n">05</span> Did my bid count? <small>you are one bidder again</small></h2>
+    <p class="hint">Every refund memo carries a Merkle inclusion proof for that bidder. Check yours, then flip one byte.</p>
+    <div class="row">
+      <label>Bidder <select data-proof-who></select></label>
+      <button type="button" data-proof-check>Check my proof</button>
+      <button type="button" data-proof-flip>Flip one byte and check</button>
+    </div>
+    <pre class="mono memo" data-proof-memo></pre>
+    <div class="verdict" data-proof-verdict></div>
+  </section>
+</main>
+
+<footer class="foot">
+  Sandbox: simulated chain, real settlement code (<code>src/sandbox.ts</code>, run in your browser).
+  The live run on Zcash testnet is on the <a href="./?a=testnet-01">auction page</a>.
+</footer>
+<script type="module" src="/assets/sandbox.js"></script>
+</body>
+</html>
